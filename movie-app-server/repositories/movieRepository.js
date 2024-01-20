@@ -1,5 +1,3 @@
-// movieRepository.js
-
 const Movie = require('../models/movieModel');
 
 class MovieRepository {

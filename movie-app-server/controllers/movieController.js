@@ -1,5 +1,3 @@
-// movieController.js
-
 const MovieRepository = require('../repositories/movieRepository');
 
 class MovieController {
