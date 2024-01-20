@@ -1,11 +1,10 @@
-// movieModel.js
-
 const db = require('../config/database');
 
 class Movie {
   static getAll(callback) {
     db.all('SELECT * FROM movies', (err, result) => {
       if (err) {
+        console.log("Select query error: "+err)
         callback(err, null);
       } else {
         callback(null, result);
@@ -29,7 +28,7 @@ class Movie {
 
     db.run(insertString, insertData, function (err) {
       if (err) {
-        console.log("Insert query error:"+err)
+        console.log("Insert query error: "+err)
         callback(err, null);
       } else {
         callback(null, {});
@@ -40,7 +39,7 @@ class Movie {
   static deleteMovie(id, callback) {
     db.run('DELETE FROM movies WHERE id_movie = ?', [id], function (err) {
       if (err) {
-        console.log("Delete query error:"+err)
+        console.log("Delete query error: "+err)
         callback(err, null);
       } else {
         callback(null, { message: 'Movie deleted successfully' });
