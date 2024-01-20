@@ -15,17 +15,21 @@ class Movie {
 
   static addMovie(movieData, callback) {
     const {title, release, img} = movieData
-
+    
     var insertString = ''
+    var insertData = []
     if(img){
       insertString='INSERT INTO movies (title, release, img) VALUES (?, ?, ?)'
+      insertData = [title, release, img]
     }
     else{
       insertString='INSERT INTO movies (title, release) VALUES (?, ?)'
+      insertData = [title, release]
     }
 
-    db.run(insertString, ...movieData, function (err) {
+    db.run(insertString, insertData, function (err) {
       if (err) {
+        console.log("Insert query error:"+err)
         callback(err, null);
       } else {
         callback(null, {});
@@ -36,7 +40,7 @@ class Movie {
   static deleteMovie(id, callback) {
     db.run('DELETE FROM movies WHERE id_movie = ?', [id], function (err) {
       if (err) {
-        console.log(err)
+        console.log("Delete query error:"+err)
         callback(err, null);
       } else {
         callback(null, { message: 'Movie deleted successfully' });

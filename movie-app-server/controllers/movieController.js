@@ -16,8 +16,8 @@ class MovieController {
   static addMovie(req, res) {
     const { title, release, img } = req.body;
 
+    console.log(req.body)
     if (!title || !release) {
-      console.log(req.body)
       res.status(400).json({ error: 'Invalid input data' });
       return;
     }
@@ -35,7 +35,6 @@ class MovieController {
       }
     });
   }
-
 
   static deleteMovie(req, res) {
     const idMovie = req.params.id;
