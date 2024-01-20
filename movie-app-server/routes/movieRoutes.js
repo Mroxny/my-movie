@@ -10,8 +10,9 @@ router.use((req, res, next) => {
 });
 
 router.get('/movies', MovieController.getAllMovies);
+router.get('/movies/:id', MovieController.getMovieById);
 router.post('/movies', MovieController.addMovie);
-// router.put('/movies/:id', MovieController.updateMovieRating);
+router.put('/movies/:id', MovieController.updateMovie);
 router.delete('/movies/:id', MovieController.deleteMovie);
 
 module.exports = router;

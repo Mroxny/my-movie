@@ -11,6 +11,18 @@ class MovieController {
     });
   }
 
+  static getMovieById(req, res) {
+    const idMovie = req.params.id;
+
+    MovieRepository.getMovieById(idMovie, (err, result) => {
+      if (err) {
+        res.status(500).json({ error: 'Server error' });
+      } else {
+        res.json(result);
+      }
+    });
+  }
+
   static addMovie(req, res) {
     const { title, release, img } = req.body;
 
@@ -34,9 +46,50 @@ class MovieController {
     });
   }
 
+  static updateMovie(req, res) {
+    const idMovie = req.params.id;
+    const { title, release, img } = req.body;
+
+    if (!title && !release && !img) {
+      res.status(400).json({ error: 'Invalid input data' });
+      return;
+    }
+
+    MovieRepository.getMovieById(idMovie, (err, movie) => {
+      if (err) {
+        res.status(500).json({ error: 'Server error' });
+      } else {
+        if (!movie) {
+          res.status(404).json({ error: 'Movie not found' });
+        } else {
+          const updatedData = {}
+
+          if (title !== undefined) {
+            updatedData.title = title;
+          }
+
+          if (release !== undefined) {
+            updatedData.release = release;
+          }
+
+          if (img !== undefined) {
+            updatedData.img = img;
+          }
+
+          MovieRepository.updateMovie(idMovie, updatedData, (err, result) => {
+            if (err) {
+              res.status(500).json({ error: 'Server error' });
+            } else {
+              res.json(result);
+            }
+          });
+        }
+      }
+    });
+  }
+
   static deleteMovie(req, res) {
     const idMovie = req.params.id;
-    console.log(idMovie)
 
     MovieRepository.deleteMovie(idMovie, (err, result) => {
       if (err) {
