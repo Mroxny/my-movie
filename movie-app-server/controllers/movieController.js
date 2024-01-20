@@ -14,14 +14,20 @@ class MovieController {
   }
 
   static addMovie(req, res) {
-    const { title, rating } = req.body;
+    const { title, release, img } = req.body;
 
-    if (!title || !rating) {
+    if (!title || !release) {
+      console.log(req.body)
       res.status(400).json({ error: 'Invalid input data' });
       return;
     }
 
-    MovieRepository.addMovie(title, rating, (err, result) => {
+    const movieData = { title, release };
+    if (img) {
+      movieData.img = img;
+    }
+
+    MovieRepository.addMovie(movieData, (err, result) => {
       if (err) {
         res.status(500).json({ error: 'Server error' });
       } else {
@@ -30,26 +36,10 @@ class MovieController {
     });
   }
 
-  static updateMovieRating(req, res) {
-    const idMovie = req.params.id;
-    const newRating = req.body.rating;
-
-    if (!newRating) {
-      res.status(400).json({ error: 'Invalid input data' });
-      return;
-    }
-
-    MovieRepository.updateMovieRating(idMovie, newRating, (err, result) => {
-      if (err) {
-        res.status(500).json({ error: 'Server error' });
-      } else {
-        res.json(result);
-      }
-    });
-  }
 
   static deleteMovie(req, res) {
     const idMovie = req.params.id;
+    console.log(idMovie)
 
     MovieRepository.deleteMovie(idMovie, (err, result) => {
       if (err) {

@@ -7,12 +7,8 @@ class MovieRepository {
     Movie.getAll(callback);
   }
 
-  static addMovie(title, rating, callback) {
-    Movie.addMovie(title, rating, callback);
-  }
-
-  static updateMovieRating(id, newRating, callback) {
-    Movie.updateMovieRating(id, newRating, callback);
+  static addMovie(movieData, callback) {
+    Movie.addMovie(movieData, callback);
   }
 
   static deleteMovie(id, callback) {
