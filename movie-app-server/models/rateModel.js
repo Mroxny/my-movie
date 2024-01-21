@@ -25,8 +25,23 @@ class Rate {
     });
   }
 
+
   static getByMovie(id_movie ,callback) {
-    db.all('SELECT * FROM rates WHERE movie_id = ?', id_movie, (err, result) => {
+    const query = `
+    SELECT
+      r.movie_id,
+      AVG(r.r_p) AS avg_r_p,
+      AVG(r.r_ac) AS avg_r_ac,
+      AVG(r.r_s) AS avg_r_s,
+      AVG(r.r_au) AS avg_r_au,
+      AVG(r.r_all) AS avg_r_all,
+      u.email
+    FROM rates r
+    JOIN users u ON r.user_id = u.id_user
+    WHERE r.movie_id = ?
+    GROUP BY r.movie_id, u.email;`
+
+    db.all(query, id_movie, (err, result) => {
       if (err) {
         console.log("Select query error: "+err)
         callback(err, null);
@@ -37,8 +52,25 @@ class Rate {
     });
   }
 
-  static getByUser(id_user ,callback) {
-    db.all('SELECT * FROM rates WHERE user_id = ?', id_user, (err, result) => {
+  static getByUser(id_user, callback) {
+    const query = `
+    SELECT
+      m.title,
+      AVG(r.r_p) AS avg_r_p,
+      AVG(r.r_ac) AS avg_r_ac,
+      AVG(r.r_s) AS avg_r_s,
+      AVG(r.r_au) AS avg_r_au,
+      AVG(r.r_all) AS avg_r_all,
+      u.email
+    FROM rates r
+    JOIN users u ON r.user_id = u.id_user
+    JOIN movies m ON r.movie_id = m.id_movie
+    WHERE r.user_id = ?
+    GROUP BY
+    u.email;
+`
+
+    db.all(query, id_user, (err, result) => {
       if (err) {
         console.log("Select query error: "+err)
         callback(err, null);

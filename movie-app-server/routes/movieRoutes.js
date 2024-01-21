@@ -30,7 +30,7 @@ router.delete('/users/:id', UserController.deleteUser);
 // rates
 router.get('/rates', RateController.getAllRates);
 router.get('/rates/:id', RateController.getRateById);
-router.get('/rates/user/:idUser', RateController.getRateByUser);
+router.get('/rates/user/:idUser', RateController.getRatesByUser);
 router.get('/rates/movie/:idMovie', RateController.getRatesByMovie);
 router.post('/rates', RateController.addRate);
 router.put('/rates/:id', RateController.updateRate);

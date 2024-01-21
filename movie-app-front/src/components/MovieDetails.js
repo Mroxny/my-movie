@@ -21,7 +21,11 @@ const MovieDetails = ({ movie }) => {
       <div>
         <h2>{movie.title}</h2>
         <p>Rok produkcji: {movie.release}</p>
-        <p>Średnia ocen: {}</p>
+        <p><b>Ogólne oceny: {movie.avg_r_all.toFixed(1)}</b></p>
+        <p>Oceny zdjęć: {movie.avg_r_p.toFixed(1)}</p>
+        <p>Oceny aktorów: {movie.avg_r_ac.toFixed(1)}</p>
+        <p>Oceny scenariusza: {movie.avg_r_s.toFixed(1)}</p>
+        <p>Oceny dzwięku: {movie.avg_r_au.toFixed(1)}</p>
         <Link to={`/rates/movie/${movie.id_movie}`} className=''>Zobacz oceny innych użytkowników</Link>
           <h3>Zaangażowani w produkcję:</h3>
           <ul>

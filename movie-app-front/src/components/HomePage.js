@@ -6,6 +6,7 @@ const HomePage = () => {
     const [detailsVisible, setDetailsVisible] = useState(null);
     const [movies, setMovies] = useState([]);
 
+
   useEffect(() => {
     fetch('http://localhost:3003/movies')
       .then(response => response.json())

@@ -2,7 +2,20 @@ const db = require('../config/database');
 
 class Movie {
   static getAll(callback) {
-    db.all('SELECT * FROM movies', (err, result) => {
+    const query = `
+    SELECT
+      m.*,
+      AVG(r.r_p) AS avg_r_p,
+      AVG(r.r_ac) AS avg_r_ac,
+      AVG(r.r_s) AS avg_r_s,
+      AVG(r.r_au) AS avg_r_au,
+      AVG(r.r_all) AS avg_r_all
+    FROM movies m
+    LEFT JOIN rates r ON m.id_movie = r.movie_id
+    GROUP BY m.id_movie;
+    `
+
+    db.all(query, (err, result) => {
       if (err) {
         console.log("Select query error: "+err)
         callback(err, null);
@@ -14,8 +27,21 @@ class Movie {
   }
 
   static getById(id ,callback) {
-    console.log(id)
-    db.all('SELECT * FROM movies WHERE id_movie = ?', id, (err, result) => {
+    const query = `
+    SELECT
+      m.*,
+      AVG(r.r_p) AS avg_r_p,
+      AVG(r.r_ac) AS avg_r_ac,
+      AVG(r.r_s) AS avg_r_s,
+      AVG(r.r_au) AS avg_r_au,
+      AVG(r.r_all) AS avg_r_all
+    FROM movies m
+    LEFT JOIN rates r ON m.id_movie = r.movie_id
+    WHERE m.id_movie = ?
+    GROUP BY m.id_movie;
+    `
+    
+    db.all(query, id, (err, result) => {
       if (err) {
         console.log("Select query error: "+err)
         callback(err, null);

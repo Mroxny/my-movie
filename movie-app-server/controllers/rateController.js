@@ -36,7 +36,8 @@ class RateController {
     });
   }
 
-  static getRateByUser(req, res) {
+
+  static getRatesByUser(req, res) {
     const idUser = req.params.idUser;
 
     Rate.getByUser(idUser, (err, result) => {
