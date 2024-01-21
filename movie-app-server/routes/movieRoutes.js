@@ -23,4 +23,13 @@ router.post('/users', MovieController.addUser);
 router.put('/users/:id', MovieController.updateUser);
 router.delete('/users/:id', MovieController.deleteUser);
 
+// rates
+router.get('/rates', MovieController.getAllRates);
+router.get('/rates/:id', MovieController.getRateById);
+router.get('/rates/user/:idUser', MovieController.getRateByUser);
+router.get('/rates/movie/:idMovie', MovieController.getRatesByMovie);
+router.post('/rates', MovieController.addRate);
+router.put('/rates/:id', MovieController.updateRate);
+router.delete('/rates/:id', MovieController.deleteRate);
+
 module.exports = router;
