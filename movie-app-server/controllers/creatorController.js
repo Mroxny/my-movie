@@ -37,24 +37,46 @@ class CreatorController {
   }
 
   static addCreator(req, res) {
-    const {movie_id, user_id, r_p, r_ac, r_s, r_au, r_all} = req.body;
+    const {movie_id, name, surname, birth_date, role} = req.body;
 
     console.log(req.body)
-    if (!movie_id || !user_id || !r_p || !r_ac || !r_s || !r_au || !r_all) {
+    if (!movie_id || !name || !surname || !birth_date || !role) {
       res.status(400).json({ error: 'Invalid input data' });
       return;
     }
 
-    const rateData = {movie_id, user_id, r_p, r_ac, r_s, r_au, r_all};
+    const personData = {name, surname, birth_date};
+
+    Creator.addPerson(personData, (err) => {
+        if (err) {
+          res.status(500).json({ error: 'Server error' });
+        } else{
+            Creator.getLastPerson((err, person) => {
+                if (err) {
+                  res.status(500).json({ error: 'Server error' });
+                } else {
+                  if (!person) {
+                    res.status(404).json({ error: 'Person not added' });
+                  } else {
+                    const {id_person} = person[0]
+                    const creatorData = {movie_id, id_person, role};
+                    console.log(creatorData)
+                    
+                    Creator.addCreator(creatorData, (err, result) => {
+                      if (err) {
+                        res.status(500).json({ error: 'Server error' });
+                      } else {
+                        res.json(result);
+                      }
+                    });
+                  }
+                }
+              });
+        }
+      });
 
 
-    Creator.addCreator(rateData, (err, result) => {
-      if (err) {
-        res.status(500).json({ error: 'Server error' });
-      } else {
-        res.json({ message: 'Rate added successfully', id: result.id });
-      }
-    });
+    
   }
 
   static updateCreator(req, res) {
