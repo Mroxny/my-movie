@@ -1,29 +1,16 @@
 import React, {useState} from 'react';
+import LoginComponent from './LoginComponent';
 
 
 const LoginPage = () => {
-  const [loginUsername, setLoginUsername] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+
   const [regUsername, setRegUsername] = useState('');
   const [regEmail, setRegEmail] = useState('');
   const [regPassword1, setRegPassword1] = useState('');
   const [regPassword2, setRegPassword2] = useState('');
-  const [loginError, setLoginError] = useState('');
   const [regError, setRegError] = useState('');
 
-  const validateLogin = () => {
-    if (loginUsername.length <= 0) {
-      setLoginError('Nie podano nazwy użytkownika');
-      return false;
-    }
-    if (loginPassword.length <= 0) {
-      setLoginError('Nie podano hasła');
-      return false;
-    }
 
-    setLoginError('');
-    return true;
-  };
 
   const validateRegister = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -55,35 +42,7 @@ const LoginPage = () => {
   return (
 
       <div className="main-block">
-        <div className="login-block">
-          <h3>Zaloguj się</h3>
-          <form action="/" onSubmit={(e) => validateLogin()}>
-            <input
-              className="main-block-input"
-              type="text"
-              name="login-username"
-              id="login-username"
-              placeholder="username"
-              value={loginUsername}
-              onChange={(e) => setLoginUsername(e.target.value)}
-            />
-            <br />
-            <input
-              className="main-block-input"
-              type="password"
-              name="login-password"
-              id="login-password"
-              placeholder="password"
-              value={loginPassword}
-              onChange={(e) => setLoginPassword(e.target.value)}
-            />
-            <br />
-            <button className="main-block-input">Zaloguj</button>
-            <p className="error-msg" style={{ display: loginError ? '' : 'none' }} id="login-error">
-              {loginError}
-            </p>
-          </form>
-        </div>
+        <LoginComponent/>
 
         <p style={{ margin: '20px', textAlign: 'center' }}>-- LUB --</p>
 
