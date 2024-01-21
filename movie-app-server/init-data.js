@@ -19,14 +19,14 @@ db.serialize(() => {
   ];
 
   const initialRateData = [
-    { movie_id: 1, user_id: 1, r_p: 10, r_ac: 10, r_s: 10, r_au: 10, r_all: 10 },
-    { movie_id: 1, user_id: 1, r_p: 10, r_ac: 10, r_s: 10, r_au: 10, r_all: 10 },
-    { movie_id: 1, user_id: 1, r_p: 10, r_ac: 10, r_s: 10, r_au: 10, r_all: 10 },
-    { movie_id: 1, user_id: 1, r_p: 10, r_ac: 10, r_s: 10, r_au: 10, r_all: 10 },
-    { movie_id: 1, user_id: 1, r_p: 10, r_ac: 10, r_s: 10, r_au: 10, r_all: 10 },
-    { movie_id: 1, user_id: 1, r_p: 10, r_ac: 10, r_s: 10, r_au: 10, r_all: 10 },
-    { movie_id: 1, user_id: 1, r_p: 10, r_ac: 10, r_s: 10, r_au: 10, r_all: 10 },
-    { movie_id: 1, user_id: 1, r_p: 10, r_ac: 10, r_s: 10, r_au: 10, r_all: 10 }
+    { movie_id: 1, user_id: 1, r_p: 1, r_ac: 2, r_s: 3, r_au: 4, r_all: 5 },
+    { movie_id: 1, user_id: 2, r_p: 10, r_ac: 10, r_s: 10, r_au: 10, r_all: 10 },
+    { movie_id: 1, user_id: 3, r_p: 10, r_ac: 10, r_s: 10, r_au: 10, r_all: 10 },
+    { movie_id: 2, user_id: 1, r_p: 2, r_ac: 2, r_s: 2, r_au: 2, r_all: 2 },
+    { movie_id: 2, user_id: 2, r_p: 10, r_ac: 10, r_s: 10, r_au: 10, r_all: 10 },
+    { movie_id: 2, user_id: 4, r_p: 10, r_ac: 10, r_s: 10, r_au: 10, r_all: 10 },
+    { movie_id: 3, user_id: 3, r_p: 3, r_ac: 10, r_s: 3, r_au: 10, r_all: 3 },
+    { movie_id: 3, user_id: 4, r_p: 10, r_ac: 10, r_s: 10, r_au: 10, r_all: 10 }
   ];
 
   const initialPersonData = [
