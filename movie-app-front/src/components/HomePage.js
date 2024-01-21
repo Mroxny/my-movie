@@ -19,10 +19,6 @@ const HomePage = () => {
   
     return (
     <div>
-        <div className="top-bar">
-        <input className="search-bar-elem" type="text" placeholder='Wyszukaj...'/>
-        <button className="search-bar-elem" type="button"><i className="fa fa-search"></i></button>
-        </div>
 
       {detailsVisible && (
           <MovieDetails movie={movies.find((movie) => movie.id_movie === detailsVisible)} />
