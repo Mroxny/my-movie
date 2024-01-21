@@ -4,6 +4,7 @@ import HomePage from './components/HomePage';
 import NotFound from './components/NotFound';
 import LoginPage from './components/LoginPage';
 import './App.css';
+import MovieRates from './components/MovieRates';
 
 
 const App = () => {
@@ -23,7 +24,7 @@ const App = () => {
 
         <Routes>
           <Route path="/" element={<HomePage/>} />
-          <Route path="/rates/movie/:movieId" element={<LoginPage/>} />
+          <Route path="/rates/movie/:movieId" element={<MovieRates/>} />
           <Route path="/login" element={<LoginPage/>} />
           <Route path="*" element={<NotFound/>} />
         </Routes>

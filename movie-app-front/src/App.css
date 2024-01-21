@@ -81,6 +81,19 @@ nav {
     border-radius: 10px;
 }
 
+.user-rates {
+    background-color: #2d2d2d;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 20px;
+    width: 250px;
+    text-align: center;
+}
+
+.user-rates li {
+    margin-top: 5px;
+}
+
 .main-block {
     margin: 10px;
 }
