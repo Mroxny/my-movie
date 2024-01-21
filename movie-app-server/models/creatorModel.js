@@ -2,7 +2,25 @@ const db = require('../config/database');
 
 class Creator {
     static getAll(callback) {
-        db.all('SELECT * FROM creators', (err, result) => {
+        const query = `
+        SELECT
+            c.id_creator,
+            c.movie_id, 
+            p.name AS person_name,
+            p.surname AS person_surname,
+            p.birth_date AS person_birth_date,
+            c.role AS role_id,
+            CASE c.role
+                WHEN 1 THEN 'Rezyser'
+                WHEN 2 THEN 'Scenarzysta'
+                WHEN 3 THEN 'Aktor'
+                ELSE 'Inna rola'
+            END AS role
+        FROM creators c
+        JOIN persons p ON c.person_id = p.id_person;
+        `
+
+        db.all(query, (err, result) => {
           if (err) {
             console.log("Select query error: "+err)
             callback(err, null);
@@ -14,7 +32,26 @@ class Creator {
       }
     
       static getById(id ,callback) {
-        db.all('SELECT * FROM creators WHERE id_creator = ?', id, (err, result) => {
+        const query = `
+        SELECT
+            c.id_creator,
+            c.movie_id, 
+            p.name AS person_name,
+            p.surname AS person_surname,
+            p.birth_date AS person_birth_date,
+            c.role AS role_id,
+            CASE c.role
+                WHEN 1 THEN 'Rezyser'
+                WHEN 2 THEN 'Scenarzysta'
+                WHEN 3 THEN 'Aktor'
+                ELSE 'Inna rola'
+            END AS role
+        FROM creators c
+        JOIN persons p ON c.person_id = p.id_person
+        WHERE id_creator = ? ;
+        `
+
+        db.all(query, id,  (err, result) => {
           if (err) {
             console.log("Select query error: "+err)
             callback(err, null);
@@ -26,7 +63,26 @@ class Creator {
       }
     
       static getByMovie(id_movie ,callback) {
-        db.all('SELECT * FROM creators WHERE movie_id = ?', id_movie, (err, result) => {
+        const query = `
+        SELECT
+            c.id_creator,
+            c.movie_id, 
+            p.name AS person_name,
+            p.surname AS person_surname,
+            p.birth_date AS person_birth_date,
+            c.role AS role_id,
+            CASE c.role
+                WHEN 1 THEN 'Rezyser'
+                WHEN 2 THEN 'Scenarzysta'
+                WHEN 3 THEN 'Aktor'
+                ELSE 'Inna rola'
+            END AS role
+        FROM creators c
+        JOIN persons p ON c.person_id = p.id_person
+        WHERE c.movie_id = ? ;
+        `
+
+        db.all(query, id_movie, (err, result) => {
           if (err) {
             console.log("Select query error: "+err)
             callback(err, null);

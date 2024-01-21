@@ -14,9 +14,7 @@ const HomePage = () => {
   }, []);
   
     const showDetails = (movieId) => {
-      console.log("Details before")
       setDetailsVisible(movieId);
-      console.log("Details after")
     };
   
     return (
