@@ -2,6 +2,7 @@ const express = require('express');
 const MovieController = require('../controllers/movieController');
 const UserController = require('../controllers/userController');
 const RateController = require('../controllers/rateController');
+const CreatorController = require('../controllers/creatorController');
 
 
 const router = express.Router();
@@ -34,5 +35,13 @@ router.get('/rates/movie/:idMovie', RateController.getRatesByMovie);
 router.post('/rates', RateController.addRate);
 router.put('/rates/:id', RateController.updateRate);
 router.delete('/rates/:id', RateController.deleteRate);
+
+// creators
+router.get('/creators', CreatorController.getAllCreators);
+router.get('/creators/:id', CreatorController.getCreatorById);
+router.get('/creators/movie/:idMovie', CreatorController.getCreatorsByMovie);
+router.post('/creators', CreatorController.addCreator);
+router.put('/creators/:id', CreatorController.updateCreator);
+router.delete('/creators/:id', CreatorController.deleteCreator);
 
 module.exports = router;
