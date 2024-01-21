@@ -1,4 +1,6 @@
 import React, { useState, useEffect }from 'react';
+import {Link} from 'react-router-dom';
+
 
 const MovieDetails = ({ movie }) => {
   const [creators, setCreators] = useState([]);
@@ -20,6 +22,7 @@ const MovieDetails = ({ movie }) => {
         <h2>{movie.title}</h2>
         <p>Rok produkcji: {movie.release}</p>
         <p>Średnia ocen: {}</p>
+        <Link to={`/rates/movie/${movie.id_movie}`} className=''>Zobacz oceny innych użytkowników</Link>
           <h3>Zaangażowani w produkcję:</h3>
           <ul>
             {creators.map((creator, index) => (
