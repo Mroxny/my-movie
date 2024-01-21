@@ -1,5 +1,8 @@
 const express = require('express');
 const MovieController = require('../controllers/movieController');
+const UserController = require('../controllers/userController');
+const RateController = require('../controllers/rateController');
+
 
 const router = express.Router();
 
@@ -17,19 +20,19 @@ router.put('/movies/:id', MovieController.updateMovie);
 router.delete('/movies/:id', MovieController.deleteMovie);
 
 // users
-router.get('/users', MovieController.getAllUsers);
-router.get('/users/:id', MovieController.getUserById);
-router.post('/users', MovieController.addUser);
-router.put('/users/:id', MovieController.updateUser);
-router.delete('/users/:id', MovieController.deleteUser);
+router.get('/users', UserController.getAllUsers);
+router.get('/users/:id', UserController.getUserById);
+router.post('/users', UserController.addUser);
+router.put('/users/:id', UserController.updateUser);
+router.delete('/users/:id', UserController.deleteUser);
 
 // rates
-router.get('/rates', MovieController.getAllRates);
-router.get('/rates/:id', MovieController.getRateById);
-router.get('/rates/user/:idUser', MovieController.getRateByUser);
-router.get('/rates/movie/:idMovie', MovieController.getRatesByMovie);
-router.post('/rates', MovieController.addRate);
-router.put('/rates/:id', MovieController.updateRate);
-router.delete('/rates/:id', MovieController.deleteRate);
+router.get('/rates', RateController.getAllRates);
+router.get('/rates/:id', RateController.getRateById);
+router.get('/rates/user/:idUser', RateController.getRateByUser);
+router.get('/rates/movie/:idMovie', RateController.getRatesByMovie);
+router.post('/rates', RateController.addRate);
+router.put('/rates/:id', RateController.updateRate);
+router.delete('/rates/:id', RateController.deleteRate);
 
 module.exports = router;
