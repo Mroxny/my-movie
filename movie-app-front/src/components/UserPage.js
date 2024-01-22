@@ -5,6 +5,7 @@ const UserPage = () => {
   const location = useLocation()
   const [user, setUser] = useState('');
   const [rates, setRates] = useState('');
+  const [response, setResponse] = useState('');
 
   
   var userEmail = ''
@@ -33,6 +34,21 @@ const UserPage = () => {
       .catch(error => console.error('Error getting movies:', error));
   }, [user]);
 
+  const handleFileChange = (event) => {
+    const file = event.target.value;
+    console.log("File path: "+ file)
+
+    fetch(`http://localhost:3003/users/${user.id_user}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({img: file}),
+            })
+        .then(res => setResponse(res));
+
+    console.log("Status: "+ response.status)
+  };
   
     return (
 
@@ -44,7 +60,8 @@ const UserPage = () => {
         <div class="big-card-block">
             <h3>Panel Użytkownika</h3>
             <div class="bc-image-block">
-                <input type="file" id="user-image" name="user-image"/>
+                <p><img src={user.img} alt={user.email}/></p>
+                <input type="file" id="user-image" name="user-image" onChange={handleFileChange}/>
             </div>
             <div class="bc-info-block">
                 <p>Email: {user.email}</p>
