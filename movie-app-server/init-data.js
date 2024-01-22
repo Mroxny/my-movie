@@ -1,3 +1,5 @@
+const { use } = require('./routes');
+
 const sqlite3 = require('sqlite3').verbose();
 const dbPath = './data/movies.db';
 const db = new sqlite3.Database(dbPath);
@@ -5,17 +7,17 @@ const db = new sqlite3.Database(dbPath);
 db.serialize(() => {
 
   const initialMovieData = [
-    { title: 'Movie 1', release: 2001 },
-    { title: 'Movie 2', release: 2002 },
-    { title: 'Movie 3', release: 2003 },
-    { title: 'Movie 4', release: 2004 }
+    { title: 'Movie 1', release: 2001, approved: 1 },
+    { title: 'Movie 2', release: 2002, approved: 1 },
+    { title: 'Movie 3', release: 2003, approved: 0 },
+    { title: 'Movie 4', release: 2004, approved: 0 }
   ];
 
   const initialUserData = [
-    { email: 'user_1@wp.pl', password: "123" },
-    { email: 'user_2@wp.pl', password: "123" },
-    { email: 'user_3@wp.pl', password: "123" },
-    { email: 'user_4@wp.pl', password: "123" }
+    { email: 'user_1@wp.pl', password: "123", isAdmin: 1 },
+    { email: 'user_2@wp.pl', password: "123", isAdmin: 0 },
+    { email: 'user_3@wp.pl', password: "123", isAdmin: 0 },
+    { email: 'user_4@wp.pl', password: "123", isAdmin: 0 }
   ];
 
   const initialRateData = [
@@ -55,19 +57,19 @@ db.serialize(() => {
     { movie_id: 4, person_id: 1, role: 4 }
   ];
 
-  const insertMovie = db.prepare('INSERT INTO movies (title, release) VALUES (?, ?)');
-  const insertUser = db.prepare('INSERT INTO users (email, password) VALUES (?, ?)');
+  const insertMovie = db.prepare('INSERT INTO movies (title, release, approved) VALUES (?, ?, ?)');
+  const insertUser = db.prepare('INSERT INTO users (email, password, isAdmin) VALUES (?, ?, ?)');
   const insertRate = db.prepare('INSERT INTO rates (movie_id, user_id, r_p, r_ac, r_s, r_au, r_all) VALUES (?, ?, ?, ?, ?, ?, ?)');
   const insertPerson = db.prepare('INSERT INTO persons (name, surname, birth_date) VALUES (?, ?, ?)');
   const insertCreator = db.prepare('INSERT INTO creators (movie_id, person_id, role) VALUES (?, ?, ?)');
 
   initialMovieData.forEach((movie) => {
-    insertMovie.run(movie.title, movie.release);
+    insertMovie.run(movie.title, movie.release, movie.approved);
   });
   insertMovie.finalize();
 
   initialUserData.forEach((user) => {
-    insertUser.run(user.email, user.password);
+    insertUser.run(user.email, user.password, user.isAdmin);
   });
   insertUser.finalize();
 
