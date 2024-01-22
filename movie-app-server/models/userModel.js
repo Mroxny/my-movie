@@ -26,6 +26,18 @@ class User {
     });
   }
 
+  static getByEmail(email ,callback) {
+    db.all("SELECT * FROM users WHERE email = ?", email, (err, result) => {
+      if (err) {
+        console.log("Select query error: "+err)
+        callback(err, null);
+      } else {
+        console.log("Select query result: "+result)
+        callback(null, result);
+      }
+    });
+  }
+
   static addUser(userData, callback) {
     const {email, password, img} = userData
     

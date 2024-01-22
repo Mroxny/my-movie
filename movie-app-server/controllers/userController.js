@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const { use } = require('../routes');
 
 
 class UserController {
@@ -17,6 +18,20 @@ class UserController {
     const idUser = req.params.id;
 
     User.getById(idUser, (err, result) => {
+      if (err) {
+        res.status(500).json({ error: 'Server error' });
+      } else {
+        res.json(result);
+      }
+    });
+  }
+
+  static getUserByEmail(req, res) {
+    const userEmail = req.params.email;
+
+    console.log("email: "+userEmail)
+
+    User.getByEmail(userEmail, (err, result) => {
       if (err) {
         res.status(500).json({ error: 'Server error' });
       } else {

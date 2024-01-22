@@ -23,6 +23,7 @@ router.delete('/movies/:id', MovieController.deleteMovie);
 // users
 router.get('/users', UserController.getAllUsers);
 router.get('/users/:id', UserController.getUserById);
+router.get('/users/email/:email', UserController.getUserByEmail);
 router.post('/users', UserController.addUser);
 router.put('/users/:id', UserController.updateUser);
 router.delete('/users/:id', UserController.deleteUser);
