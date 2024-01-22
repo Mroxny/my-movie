@@ -45,7 +45,8 @@ const HomePage = () => {
         )}
   
         <div className="movies-list">
-          {movies.map((movie) => (
+          {movies.filter((movie) => userAdmin || movie.approved === 1)
+          .map((movie) => (
             <MovieCard key={movie.id_movie} movie={movie} onClick={() => showDetails(movie.id_movie)} />
           ))}
         </div>
