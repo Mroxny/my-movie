@@ -1,6 +1,10 @@
 import React, {useState} from 'react';
+import { useNavigate }  from 'react-router-dom';
+
 
 const LoginComponent = () => {
+    const nav = useNavigate()
+
     const [loginUsername, setLoginUsername] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
     const [loginError, setLoginError] = useState('');
@@ -22,7 +26,7 @@ const LoginComponent = () => {
             setLoginError('Niepoprawny email');
           return false;
         }
-        
+
         if (loginPassword.length <= 0) {
             setLoginError('Nie podano hasła');
             return false
@@ -42,6 +46,8 @@ const LoginComponent = () => {
         
         console.log("Zalogowano")
         setLoginError('');
+
+        nav("/", {state: {userEmail:loginUsername}})
         return true
     };
 

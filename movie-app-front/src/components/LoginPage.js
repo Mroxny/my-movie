@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link }  from 'react-router-dom';
 import LoginComponent from './LoginComponent';
 import RegisterComponent from './RegisterComponent';
 
@@ -6,7 +7,10 @@ import RegisterComponent from './RegisterComponent';
 const LoginPage = () => {
 
   return (
-
+    <div>
+      <nav>
+        <Link to="/" className='nav-elem'>Strona Główna</Link>
+      </nav>
       <div className="main-block">
         <LoginComponent/>
 
@@ -14,6 +18,7 @@ const LoginPage = () => {
 
         <RegisterComponent/>
       </div>
+    </div>
 
   );
 }

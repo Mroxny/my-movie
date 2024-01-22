@@ -1,10 +1,19 @@
 import React, { useState, useEffect }  from 'react';
+import { useLocation, Link }  from 'react-router-dom';
 import MovieCard from './MovieCard';
 import MovieDetails from './MovieDetails';
 
 const HomePage = () => {
-    const [detailsVisible, setDetailsVisible] = useState(null);
-    const [movies, setMovies] = useState([]);
+  const location = useLocation()
+  const [detailsVisible, setDetailsVisible] = useState(null);
+  const [movies, setMovies] = useState([]);
+  
+  var userEmail = ''
+
+  if(location.state){
+    console.log("Location state: "+ location.state.userEmail)
+    userEmail = location.state.userEmail
+  }
 
 
   useEffect(() => {
@@ -20,6 +29,11 @@ const HomePage = () => {
   
     return (
     <div>
+      <nav>
+        <Link to="/" className='nav-elem'>Strona Główna</Link>
+        {(userEmail.length <= 0 && <Link to="/login" className='nav-elem'>Zaloguj / Stwórz konto</Link>) || <Link to="/login" className='nav-elem'>Konto</Link>
+        }
+      </nav>
 
       {detailsVisible && (
           <MovieDetails movie={movies.find((movie) => movie.id_movie === detailsVisible)} />
