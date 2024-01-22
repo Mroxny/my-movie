@@ -41,7 +41,7 @@ const HomePage = () => {
       </nav>
 
       {detailsVisible && (
-          <MovieDetails movie={movies.find((movie) => movie.id_movie === detailsVisible)} />
+          <MovieDetails movie={movies.find((movie) => movie.id_movie === detailsVisible)} userEmail={userEmail}/>
         )}
   
         <div className="movies-list">

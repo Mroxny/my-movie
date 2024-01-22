@@ -56,18 +56,17 @@ class Rate {
     const query = `
     SELECT
       m.title,
-      AVG(r.r_p) AS avg_r_p,
-      AVG(r.r_ac) AS avg_r_ac,
-      AVG(r.r_s) AS avg_r_s,
-      AVG(r.r_au) AS avg_r_au,
-      AVG(r.r_all) AS avg_r_all,
-      u.email
+      r.r_p AS avg_r_p,
+      r.r_ac AS avg_r_ac,
+      r.r_s AS avg_r_s,
+      r.r_au AS avg_r_au,
+      r.r_all AS avg_r_all,
+      u.email,
+      u.id_user
     FROM rates r
     JOIN users u ON r.user_id = u.id_user
     JOIN movies m ON r.movie_id = m.id_movie
     WHERE r.user_id = ?
-    GROUP BY
-    u.email;
 `
 
     db.all(query, id_user, (err, result) => {

@@ -49,9 +49,9 @@ class MovieController {
 
   static updateMovie(req, res) {
     const idMovie = req.params.id;
-    const { title, release, img } = req.body;
+    const { title, release, img, approved } = req.body;
 
-    if (!title && !release && !img) {
+    if (!title && !release && !img && !approved) {
       res.status(400).json({ error: 'Invalid input data' });
       return;
     }
@@ -75,6 +75,10 @@ class MovieController {
 
           if (img !== undefined) {
             updatedData.img = img;
+          }
+
+          if (approved !== undefined) {
+            updatedData.approved = approved;
           }
 
           Movie.updateMovie(idMovie, updatedData, (err, result) => {
