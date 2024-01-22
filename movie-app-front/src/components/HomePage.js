@@ -9,10 +9,15 @@ const HomePage = () => {
   const [movies, setMovies] = useState([]);
   
   var userEmail = ''
+  var userAdmin = false
 
   if(location.state){
-    console.log("Location state: "+ location.state.userEmail)
     userEmail = location.state.userEmail
+    userAdmin = location.state.isAdmin
+
+    console.log("User email: "+ userEmail)
+    console.log("User admin: "+ userAdmin)
+
   }
 
 

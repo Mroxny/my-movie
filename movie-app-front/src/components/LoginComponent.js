@@ -47,7 +47,7 @@ const LoginComponent = () => {
         console.log("Zalogowano")
         setLoginError('');
 
-        nav("/", {state: {userEmail:loginUsername}})
+        nav("/", {state: {userEmail:loginUsername, isAdmin: user.isAdmin > 0 ? true : false}})
         return true
     };
 
