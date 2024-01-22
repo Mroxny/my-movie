@@ -4,7 +4,15 @@ const LoginComponent = () => {
     const [loginUsername, setLoginUsername] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
     const [loginError, setLoginError] = useState('');
+    const [user, setUser] = useState('');
 
+
+    const getUser = () => {
+        fetch(`http://localhost:3003/users/email/${loginUsername}`)
+        .then(response => response.json())
+        .then(data => setUser(data[0]))
+        .catch(error => console.error('Error getting user:', error));
+    }
 
     const validateLogin = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -14,11 +22,25 @@ const LoginComponent = () => {
             setLoginError('Niepoprawny email');
           return false;
         }
+        
         if (loginPassword.length <= 0) {
-          setLoginError('Nie podano hasła');
-          return false
+            setLoginError('Nie podano hasła');
+            return false
         }
     
+        getUser()
+        
+        if (!user){
+            setLoginError('Niepoprawny login lub hasło');
+            return false            
+        }
+
+        if (user && user.password !== loginPassword){
+            setLoginError('Niepoprawny login lub hasło');
+            return false            
+        }
+        
+        console.log("Zalogowano")
         setLoginError('');
         return true
     };
