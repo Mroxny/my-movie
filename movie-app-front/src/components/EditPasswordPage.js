@@ -78,7 +78,7 @@ const EditPasswordPage = () => {
             <input className="main-block-input" type="password" placeholder="new password" id="new-password1" onChange={(e) => setNewPswd(e.target.value)}/><br/>
             <input className="main-block-input" type="password" placeholder="repeat new password" id="new-password2" onChange={(e) => setRepeatPswd(e.target.value)}/><br/>
             <button className="main-block-input"  onClick={validatePassword}>Zmień Hasło</button>
-            <p className="error-msg" style={{ display: 1 >0 ? 'block' : 'none' }} id="password-error">{pswdError}</p>
+            <p className="error-msg" style={{ display: pswdError.length >0 ? 'block' : 'none' }} id="password-error">{pswdError}</p>
     </div>
   </div>
   </div>

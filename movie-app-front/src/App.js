@@ -7,6 +7,8 @@ import MovieRates from './components/MovieRates';
 import UserPage from './components/UserPage';
 import UserRates from './components/UserRates';
 import EditPasswordPage from './components/EditPasswordPage';
+import AddMoviePage from './components/AddMoviePage';
+
 
 import './App.css';
 
@@ -26,6 +28,7 @@ const App = () => {
           <Route path="/rates/movie/:movieId" element={<MovieRates/>} />
           <Route path="/rates/user/:userId" element={<UserRates/>} />
           <Route path="/editPassword" element={<EditPasswordPage/>} />
+          <Route path="/addMovie" element={<AddMoviePage/>} />
           <Route path="/user" element={<UserPage/>} />
           <Route path="/login" element={<LoginPage/>} />
           <Route path="*" element={<NotFound/>} />
