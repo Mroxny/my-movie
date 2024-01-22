@@ -54,13 +54,26 @@ class UserController {
       userData.img = img;
     }
 
-    User.addUser(userData, (err, result) => {
+    User.getByEmail(email, (err, user) => {
       if (err) {
         res.status(500).json({ error: 'Server error' });
       } else {
-        res.json({ message: 'User added successfully', id: result.id });
+        if (user[0] !== undefined) {
+          res.status(404).json({ error: `User email '${email}'already exists` });
+        } else {
+          User.addUser(userData, (err, result) => {
+            if (err) {
+              res.status(500).json({ error: 'Server error' });
+            } else {
+              res.json({ message: 'User added successfully', id: result.id });
+            }
+          });
+        }
+
       }
     });
+
+
   }
 
   static updateUser(req, res) {

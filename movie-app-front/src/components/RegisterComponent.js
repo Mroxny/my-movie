@@ -55,11 +55,11 @@ const RegisterComponent = () => {
         }
 
         addUser()
-
-        if(!response.ok){
-            setRegError('Wystąpił nieoczekiwany problem');
-            return false 
-        }
+        console.log("Response status: "+response.status)
+        // if(!response.ok){
+        //     setRegError('Wystąpił nieoczekiwany problem');
+        //     return false 
+        // }
 
         console.log("Zarejestrowano")
         setRegError('');
