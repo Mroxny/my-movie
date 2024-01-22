@@ -36,7 +36,7 @@ const HomePage = () => {
     <div>
       <nav>
         <Link to="/" className='nav-elem'>Strona Główna</Link>
-        {(userEmail.length <= 0 && <Link to="/login" className='nav-elem'>Zaloguj / Stwórz konto</Link>) || <Link to="/login" className='nav-elem'>Konto</Link>
+        {(userEmail.length <= 0 && <Link to="/login" className='nav-elem'>Zaloguj / Stwórz konto</Link>) || <Link to="/user" state={{userEmail:userEmail, isAdmin:userAdmin}} className='nav-elem'>Konto</Link>
         }
       </nav>
 
