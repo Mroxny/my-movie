@@ -12,10 +12,10 @@ db.serialize(() => {
   ];
 
   const initialUserData = [
-    { email: 'user_1', password: "123" },
-    { email: 'user_2', password: "123" },
-    { email: 'user_3', password: "123" },
-    { email: 'user_4', password: "123" }
+    { email: 'user_1@wp.pl', password: "123" },
+    { email: 'user_2@wp.pl', password: "123" },
+    { email: 'user_3@wp.pl', password: "123" },
+    { email: 'user_4@wp.pl', password: "123" }
   ];
 
   const initialRateData = [
