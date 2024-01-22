@@ -5,27 +5,63 @@ const RegisterComponent = () => {
     const [regPassword1, setRegPassword1] = useState('');
     const [regPassword2, setRegPassword2] = useState('');
     const [regError, setRegError] = useState('');
+    const [user, setUser] = useState();
+    const [response, setResponse] = useState('');
+
+
+    const addUser = () => {
+        fetch('http://localhost:3003/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({email: regEmail, password: regPassword1}),
+            })
+        .then(res => setResponse(res));
+        
+    }
+
+    const getUser = () => {
+        fetch(`http://localhost:3003/users/email/${regEmail}`)
+        .then(response => response.json())
+        .then(data => setUser(data[0]))
+        .catch(error => console.error('Error getting user:', error));
+    }
 
 
     const validateRegister = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
-    
         if (!emailRegex.test(regEmail)) {
-          setRegError('Niepoprawny email');
-          return false;
+            setRegError('Niepoprawny email');
+            return false;
         }
     
         if (regPassword1.length < 8) {
-          setRegError('Hasło powinno mieć co najmniej 8 znaków');
-          return false;
+            setRegError('Hasło powinno mieć co najmniej 8 znaków');
+            return false;
         }
     
         if (regPassword1 !== regPassword2) {
-          setRegError('Hasła się nie zgadzają');
-          return false;
+            setRegError('Hasła się nie zgadzają');
+            return false;
         }
-    
+
+        getUser()
+
+        if (user){
+            setRegError('Użytkownik z tym adresem już istnieje');
+            return false            
+        }
+
+        addUser()
+
+        if(!response.ok){
+            setRegError('Wystąpił nieoczekiwany problem');
+            return false 
+        }
+
+        console.log("Zarejestrowano")
         setRegError('');
         return true;
       };
