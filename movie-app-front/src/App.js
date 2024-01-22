@@ -6,6 +6,8 @@ import LoginPage from './components/LoginPage';
 import MovieRates from './components/MovieRates';
 import UserPage from './components/UserPage';
 import UserRates from './components/UserRates';
+import EditPasswordPage from './components/EditPasswordPage';
+
 import './App.css';
 
 
@@ -23,6 +25,7 @@ const App = () => {
           <Route path="/" element={<HomePage/>} />
           <Route path="/rates/movie/:movieId" element={<MovieRates/>} />
           <Route path="/rates/user/:userId" element={<UserRates/>} />
+          <Route path="/editPassword" element={<EditPasswordPage/>} />
           <Route path="/user" element={<UserPage/>} />
           <Route path="/login" element={<LoginPage/>} />
           <Route path="*" element={<NotFound/>} />

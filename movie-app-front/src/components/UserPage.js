@@ -69,7 +69,7 @@ const UserPage = () => {
             </div>
             <div class="bc-buttons-block">
                 <Link className="bc-button" to="/">Dodaj Film</Link>
-                <Link className="bc-button" to="/">Zmień Hasło</Link>
+                <Link className="bc-button" to="/editPassword" state={{userEmail:userEmail, isAdmin:userAdmin, userId:user.id_user, userPassword: user.password}}>Zmień Hasło</Link>
                 <Link className="bc-button" to="/">Wyloguj się</Link>
             </div>
         </div>
