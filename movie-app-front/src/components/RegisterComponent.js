@@ -1,6 +1,10 @@
 import React, {useState} from 'react';
+import { useNavigate }  from 'react-router-dom';
 
 const RegisterComponent = () => {
+    const nav = useNavigate()
+
+
     const [regEmail, setRegEmail] = useState('');
     const [regPassword1, setRegPassword1] = useState('');
     const [regPassword2, setRegPassword2] = useState('');
@@ -63,6 +67,8 @@ const RegisterComponent = () => {
 
         console.log("Zarejestrowano")
         setRegError('');
+
+        nav("/", {state: {userEmail:regEmail, isAdmin: false}})
         return true;
       };
 
