@@ -1,15 +1,9 @@
-import React, {useState} from 'react';
+import React from 'react';
 import LoginComponent from './LoginComponent';
 import RegisterComponent from './RegisterComponent';
 
 
 const LoginPage = () => {
-
-
-
-
-
-
 
   return (
 

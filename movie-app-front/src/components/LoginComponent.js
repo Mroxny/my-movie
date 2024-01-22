@@ -7,11 +7,12 @@ const LoginComponent = () => {
 
 
     const validateLogin = () => {
-        console.log("Sprawdzam login")
-        if (loginUsername.length <= 0) {
-            setLoginError('Nie podano nazwy użytkownika');
-            console.log("Login: "+loginError)
-            return false
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    
+        if (!emailRegex.test(loginUsername)) {
+            setLoginError('Niepoprawny email');
+          return false;
         }
         if (loginPassword.length <= 0) {
           setLoginError('Nie podano hasła');
