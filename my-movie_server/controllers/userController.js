@@ -65,7 +65,7 @@ class UserController {
             if (err) {
               res.status(500).json({ error: 'Server error' });
             } else {
-              res.json({ message: 'User added successfully', id: result.id });
+              res.status(201).json({ message: 'User added successfully', id: result.id });
             }
           });
         }
@@ -110,7 +110,7 @@ class UserController {
             if (err) {
               res.status(500).json({ error: 'Server error' });
             } else {
-              res.json(result);
+              res.status(201).json(result);
             }
           });
         }
@@ -125,7 +125,7 @@ class UserController {
       if (err) {
         res.status(500).json({ error: 'Server error' });
       } else {
-        res.json(result);
+        res.status(410).json(result);
       }
     });
   }

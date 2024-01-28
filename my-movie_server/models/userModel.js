@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const hashPassword = async (password) => {
   try {
-    const salt = await bcrypt.genSalt("10");
+    const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     return {password: hashedPassword};
   } catch (err) {
@@ -27,7 +27,6 @@ class User {
   }
 
   static getById(id ,callback) {
-    console.log(id)
     db.all('SELECT * FROM users WHERE id_user = ?', id, (err, result) => {
       if (err) {
         console.log("Select query error: "+err)
