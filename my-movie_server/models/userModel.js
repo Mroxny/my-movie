@@ -1,4 +1,17 @@
 const db = require('../config/database');
+const bcrypt = require('bcrypt');
+
+const hashPassword = async (password) => {
+  try {
+    const salt = await bcrypt.genSalt("10");
+    const hashedPassword = await bcrypt.hash(password, salt);
+    return {password: hashedPassword};
+  } catch (err) {
+    console.error('Error while encoding password: '+ err);
+    return {error: err};
+
+  }
+};
 
 class User {
   static getAll(callback) {
@@ -38,18 +51,25 @@ class User {
     });
   }
 
-  static addUser(userData, callback) {
+  static async addUser(userData, callback) {
     const {email, password, img} = userData
+    const hashedPassword = await hashPassword(password)
+    
+    if(hashedPassword.error){
+      console.log(hashedPassword.error)
+      callback(hashedPassword)
+      return
+    }
     
     var insertString = ''
     var insertData = []
     if(img){
       insertString='INSERT INTO users (email, password, img) VALUES (?, ?, ?)'
-      insertData = [email, password, img]
+      insertData = [email, hashedPassword.password, img]
     }
     else{
       insertString='INSERT INTO users (email, password) VALUES (?, ?)'
-      insertData = [email, password]
+      insertData = [email, hashedPassword.password]
     }
 
     db.run(insertString, insertData, (err) => {
