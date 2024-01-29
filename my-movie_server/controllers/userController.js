@@ -59,7 +59,7 @@ class UserController {
         res.status(500).json({ error: 'Server error' });
       } else {
         if (user[0] !== undefined) {
-          res.status(404).json({ error: `User email '${email}'already exists` });
+          res.status(409).json({ error: `User email '${email}'already exists` });
         } else {
           User.addUser(userData, (err, result) => {
             if (err) {
@@ -110,7 +110,7 @@ class UserController {
             if (err) {
               res.status(500).json({ error: 'Server error' });
             } else {
-              res.status(201).json(result);
+              res.status(200).json(result);
             }
           });
         }
