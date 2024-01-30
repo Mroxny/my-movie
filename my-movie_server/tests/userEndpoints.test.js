@@ -8,7 +8,6 @@ describe("POST /users", () => {
     test("Should create a user", async () => {
         return request(app)
             .post("/users")
-            // .set('Authorization',  `Bearer ${token}`)
             .send(reqAddUser)
             .expect(201)
             .then(res => {
@@ -23,7 +22,6 @@ describe("POST /users", () => {
     test("Should return an error of existing user", async () => {
         return request(app)
             .post("/users")
-            // .set('Authorization',  `Bearer ${token}`)
             .send(reqAddUser)
             .expect(409)
             .then(res => {
@@ -34,12 +32,27 @@ describe("POST /users", () => {
     });
 });
 
+token = 0
+describe("GET /login", () => {
+    test("Should login created user", async () => {
+        return request(app)
+            .get("/login")
+            .send(reqAddUser)
+            .expect(200)
+            .then(res => {
+                console.log(res.body.token)
+                token = res.body.token
+             })
+
+    });
+});
+
 createdUserId = 0
 describe("GET /users", () => {
     it("Should return all users", async () => {
         return request(app)
             .get("/users")
-            // .set('Authorization',  `Bearer ${token}`)
+            .set('Authorization',  token)
             .expect('Content-Type', /json/)
             .expect(200)
             .then((res) => {
@@ -53,7 +66,7 @@ describe("GET /users/:id", () => {
     it(`Should return created user`, async () => {
         return request(app)
             .get(`/users/${createdUserId}`)
-            // .set('Authorization',  `Bearer ${token}`)
+            .set('Authorization',  token)
             .expect('Content-Type', /json/)
             .expect(200)
             .then((res) => {
@@ -67,7 +80,7 @@ describe("PUT /users/:id", () => {
     test(`Should update created user`, async () => {
         return request(app)
             .put(`/users/${createdUserId}`)
-            // .set('Authorization',  `Bearer ${token}`)
+            .set('Authorization',  token)
             .send(reqUpdateUser)
             .expect(200)
             .then(res => {
@@ -82,7 +95,7 @@ describe("GET /users/email/:email", () => {
     it(`Should return updated user`, async () => {
         return request(app)
             .get(`/users/email/${reqUpdateUser.email}`)
-            // .set('Authorization',  `Bearer ${token}`)
+            .set('Authorization',  token)
             .expect('Content-Type', /json/)
             .expect(200)
             .then((res) => {
@@ -98,7 +111,7 @@ describe("DELETE /users/:id", () => {
     test(`Should delete created`, async () => {
         return request(app)
             .delete(`/users/${createdUserId}`)
-            // .set('Authorization',  `Bearer ${token}`)
+            .set('Authorization',  token)
             .expect(410)
             .then(res => {
                 console.log(res.body.message)

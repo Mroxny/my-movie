@@ -14,7 +14,7 @@ db.serialize(() => {
   ];
 
   const initialUserData = [
-    { email: 'user_1@wp.pl', password: "123", isAdmin: 1 },
+    { email: 'admin', password: "$2b$10$swD4Tbzlo0UkZFGJOYK7y.Ft72TYNW5Q7hnzB5ndgFL.7eMAogy/i", isAdmin: 1 },
     { email: 'user_2@wp.pl', password: "123", isAdmin: 0 },
     { email: 'user_3@wp.pl', password: "123", isAdmin: 0 },
     { email: 'user_4@wp.pl', password: "123", isAdmin: 0 }
