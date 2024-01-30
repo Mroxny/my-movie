@@ -1,9 +1,45 @@
 const User = require('../models/userModel');
-const { use } = require('../routes');
 
 
 class UserController {
 
+  static getUserToken(req, res) {
+    const { email, password } = req.body;
+
+    console.log("email: "+email)
+    if (!email || !password) {
+      res.status(400).json({ error: 'Invalid input data' });
+      return;
+    }
+
+    const jwt = require('jsonwebtoken');
+    const bcrypt = require('bcrypt');
+    require('dotenv').config();
+
+    const JWT_SECRET = process.env.JWT_SECRET;
+
+    User.getByEmail(email, async (err, user) => {
+      if (err) {
+        res.status(500).json({ error: 'Server error' });
+      } else {
+        if(user[0] === undefined){
+          res.status(404).json({ error: `No user with email '${email}' found` });
+        } else {
+          var u = user[0]
+          const passwordMatch = await bcrypt.compare(password, u.password);
+          if (passwordMatch) {
+            const token = jwt.sign({ id_user: u.id_user, email: u.email, isAdmin: u.isAdmin }, JWT_SECRET, { expiresIn: '1h' });
+        
+            res.status(200).json({ token });
+          } else {
+            res.status(401).json({ error: 'Nieprawidłowe dane logowania' });
+          }
+        }
+
+      }
+    });
+  }
+  
   static getAllUsers(req, res) {
     User.getAll((err, result) => {
       if (err) {
@@ -59,13 +95,13 @@ class UserController {
         res.status(500).json({ error: 'Server error' });
       } else {
         if (user[0] !== undefined) {
-          res.status(404).json({ error: `User email '${email}'already exists` });
+          res.status(409).json({ error: `User email '${email}'already exists` });
         } else {
           User.addUser(userData, (err, result) => {
             if (err) {
               res.status(500).json({ error: 'Server error' });
             } else {
-              res.json({ message: 'User added successfully', id: result.id });
+              res.status(201).json({ message: 'User added successfully', id: result.id });
             }
           });
         }
@@ -110,7 +146,7 @@ class UserController {
             if (err) {
               res.status(500).json({ error: 'Server error' });
             } else {
-              res.json(result);
+              res.status(200).json(result);
             }
           });
         }
@@ -125,7 +161,7 @@ class UserController {
       if (err) {
         res.status(500).json({ error: 'Server error' });
       } else {
-        res.json(result);
+        res.status(410).json(result);
       }
     });
   }
