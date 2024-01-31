@@ -38,8 +38,8 @@ class User {
     });
   }
 
-  static getByEmail(email ,callback) {
-    db.all("SELECT * FROM users WHERE email = ?", email, (err, result) => {
+  static getByUsername(username ,callback) {
+    db.all("SELECT * FROM users WHERE username = ?", username, (err, result) => {
       if (err) {
         console.log("Select query error: "+err)
         callback(err, null);
@@ -51,7 +51,7 @@ class User {
   }
 
   static async addUser(userData, callback) {
-    const {email, password, img} = userData
+    const {username, password} = userData
     const hashedPassword = await hashPassword(password)
     
     if(hashedPassword.error){
@@ -60,23 +60,15 @@ class User {
       return
     }
     
-    var insertString = ''
-    var insertData = []
-    if(img){
-      insertString='INSERT INTO users (email, password, img) VALUES (?, ?, ?)'
-      insertData = [email, hashedPassword.password, img]
-    }
-    else{
-      insertString='INSERT INTO users (email, password) VALUES (?, ?)'
-      insertData = [email, hashedPassword.password]
-    }
+    var insertString = 'INSERT INTO users (username, password) VALUES (?, ?)'
+    var insertData = [username, hashedPassword.password]
 
     db.run(insertString, insertData, (err) => {
       if (err) {
         console.log("Insert query error: "+err)
         callback(err, null);
       } else {
-        callback(null, {});
+        callback(null, {message: 'User added successfully'});
       }
     });
   }

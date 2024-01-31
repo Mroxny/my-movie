@@ -26,7 +26,7 @@ describe("POST /users", () => {
             .expect(409)
             .then(res => {
                 console.log(res.body.error)
-                expect(res.body.error).toEqual(`User email '${reqAddUser.email}'already exists`);
+                expect(res.body.error).toEqual(`User username '${reqAddUser.username}' already exists`);
              })
 
     });
@@ -41,6 +41,8 @@ describe("GET /login", () => {
             .expect(200)
             .then(res => {
                 console.log(res.body.token)
+                expect(res.body.token.length).toBeGreaterThan(0);
+
                 token = res.body.token
              })
 
@@ -72,7 +74,7 @@ describe("GET /users/:id", () => {
             .then((res) => {
                 console.log(res.body)
                 expect(res.statusCode).toBe(200);
-                expect(res.body[0].email).toEqual(reqAddUser.email)
+                expect(res.body.username).toEqual(reqAddUser.username)
             })
     });
 });
@@ -91,18 +93,18 @@ describe("PUT /users/:id", () => {
     });
 });
 
-describe("GET /users/email/:email", () => {
+describe("GET /users/username/:username", () => {
     it(`Should return updated user`, async () => {
         return request(app)
-            .get(`/users/email/${reqUpdateUser.email}`)
+            .get(`/users/username/${reqUpdateUser.username}`)
             .set('Authorization',  token)
             .expect('Content-Type', /json/)
             .expect(200)
             .then((res) => {
                 console.log(res.body)
                 expect(res.statusCode).toBe(200);
-                expect(res.body[0].email).toEqual(reqUpdateUser.email)
-                expect(res.body[0].id_user).toEqual(createdUserId)
+                expect(res.body.username).toEqual(reqUpdateUser.username)
+                expect(res.body.id_user).toEqual(createdUserId)
             })
     });
 });
@@ -112,7 +114,7 @@ describe("DELETE /users/:id", () => {
         return request(app)
             .delete(`/users/${createdUserId}`)
             .set('Authorization',  token)
-            .expect(410)
+            .expect(200)
             .then(res => {
                 console.log(res.body.message)
                 expect(res.body.message).toEqual('User deleted successfully');

@@ -1,10 +1,10 @@
 const reqAddUser = {
-    email:"test.user@wp.pl", 
+    username:"test_user", 
     password: "zaq1@WSX"
 }
 
 const reqUpdateUser = {
-    email:"test.user123@wp.pl"
+    username:"test_user123"
 }
 
 module.exports = {
