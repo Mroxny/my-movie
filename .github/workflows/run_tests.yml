@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  test:
+  test server:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,7 @@ jobs:
         node-version: '20'
 
     - name: Install Dependencies
-      run: npm install
+      run: npm --prefix ./my-movie_server install ./my-movie_server
 
     - name: Run Tests
       run: npm test
