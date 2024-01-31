@@ -21,8 +21,5 @@ jobs:
     - name: Install Dependencies
       run: npm --prefix ./my-movie_server install ./my-movie_server
 
-    - name: Init database
-      run: node ./my-movie_server/init-db.js
-
     - name: Run Tests
       run: npm --prefix ./my-movie_server test
