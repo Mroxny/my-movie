@@ -14,7 +14,7 @@ const verifyToken = (req, res, next) => {
   const token = req.header('Authorization');
 
   if (!token) {
-    return res.status(401).json({ error: 'Auth failed, access denied' });
+    return res.status(401).json({ error: 'Authorization failed, access denied' });
   }
 
   const JWT_SECRET = process.env.JWT_SECRET;
@@ -24,7 +24,7 @@ const verifyToken = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({ error: 'Błąd weryfikacji tokenu, autoryzacja nieudana' });
+    res.status(401).json({ error: 'Token verification error, authorization failed' });
   }
 };
 
@@ -36,36 +36,28 @@ router.use((req, res, next) => {
 });
 
 // movies
-router.get('/movies', MovieController.getAllMovies);
-router.get('/movies/:id', MovieController.getMovieById);
-router.post('/movies', MovieController.addMovie);
-router.put('/movies/:id', MovieController.updateMovie);
-router.delete('/movies/:id', MovieController.deleteMovie);
+// router.get('/movies', MovieController.getAllMovies);
+// router.get('/movies/:id', MovieController.getMovieById);
+// router.post('/movies', MovieController.addMovie);
+// router.put('/movies/:id', MovieController.updateMovie);
+// router.delete('/movies/:id', MovieController.deleteMovie);
 
 // users
 router.get('/login', UserController.getUserToken);
 router.get('/users', verifyToken, UserController.getAllUsers);
 router.get('/users/:id', verifyToken, UserController.getUserById);
-router.get('/users/email/:email', verifyToken, UserController.getUserByEmail);
+router.get('/users/username/:username', verifyToken, UserController.getUserByUsername);
 router.post('/users', UserController.addUser);
 router.put('/users/:id', verifyToken, UserController.updateUser);
 router.delete('/users/:id', verifyToken, UserController.deleteUser);
 
 // rates
-router.get('/rates', RateController.getAllRates);
-router.get('/rates/:id', RateController.getRateById);
-router.get('/rates/user/:idUser', RateController.getRatesByUser);
-router.get('/rates/movie/:idMovie', RateController.getRatesByMovie);
-router.post('/rates', RateController.addRate);
-router.put('/rates/:id', RateController.updateRate);
-router.delete('/rates/:id', RateController.deleteRate);
-
-// creators
-router.get('/creators', CreatorController.getAllCreators);
-router.get('/creators/:id', CreatorController.getCreatorById);
-router.get('/creators/movie/:idMovie', CreatorController.getCreatorsByMovie);
-router.post('/creators', CreatorController.addCreator);
-router.put('/creators/:id', CreatorController.updateCreator);
-router.delete('/creators/:id', CreatorController.deleteCreator);
+// router.get('/rates', RateController.getAllRates);
+// router.get('/rates/:id', RateController.getRateById);
+// router.get('/rates/user/:idUser', RateController.getRatesByUser);
+// router.get('/rates/movie/:idMovie', RateController.getRatesByMovie);
+// router.post('/rates', RateController.addRate);
+// router.put('/rates/:id', RateController.updateRate);
+// router.delete('/rates/:id', RateController.deleteRate);
 
 module.exports = router;
