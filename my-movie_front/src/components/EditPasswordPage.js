@@ -24,7 +24,6 @@ const EditPasswordPage = () => {
         userEmail = location.state.userEmail
         isAdmin = location.state.isAdmin
         console.log("User email: "+ userId)
-        console.log("User admin: "+ userPassword)
     }
 
     const updateUser = () => {
