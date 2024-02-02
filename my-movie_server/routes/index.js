@@ -52,12 +52,13 @@ router.put('/users/:id', verifyToken, UserController.updateUser);
 router.delete('/users/:id', verifyToken, UserController.deleteUser);
 
 // rates
-// router.get('/rates', RateController.getAllRates);
-// router.get('/rates/:id', RateController.getRateById);
-// router.get('/rates/user/:idUser', RateController.getRatesByUser);
-// router.get('/rates/movie/:idMovie', RateController.getRatesByMovie);
-// router.post('/rates', RateController.addRate);
-// router.put('/rates/:id', RateController.updateRate);
-// router.delete('/rates/:id', RateController.deleteRate);
+router.get('/rates', RateController.getAllRates);
+router.get('/rates/:id', RateController.getRateById);
+router.get('/rates/user/:idUser', RateController.getRatesByUser);
+router.get('/rates/user/:idUser/count', RateController.getRatesCountByUser);
+router.get('/rates/movie/:idMovie', RateController.getRatesByMovie);
+router.post('/rates', RateController.addRate);
+router.put('/rates/:id', RateController.updateRate);
+router.delete('/rates/:id', RateController.deleteRate);
 
 module.exports = router;
