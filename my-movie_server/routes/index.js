@@ -57,8 +57,8 @@ router.get('/rates/:id', RateController.getRateById);
 router.get('/rates/user/:idUser', RateController.getRatesByUser);
 router.get('/rates/user/:idUser/count', RateController.getRatesCountByUser);
 router.get('/rates/movie/:idMovie', RateController.getRatesByMovie);
-router.post('/rates', RateController.addRate);
-router.put('/rates/:id', RateController.updateRate);
-router.delete('/rates/:id', RateController.deleteRate);
+router.post('/rates', verifyToken,  RateController.addRate);
+router.put('/rates/:id', verifyToken, RateController.updateRate);
+router.delete('/rates/:id', verifyToken,  RateController.deleteRate);
 
 module.exports = router;

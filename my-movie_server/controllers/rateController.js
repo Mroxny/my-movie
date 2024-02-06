@@ -61,9 +61,9 @@ class RateController {
     });
   }
 
+  // TODO: date format validation
   static addRate(req, res) {
     const {user_id, movie_id, rate_type, rate_value, rate_date} = req.body;
-
     console.log(req.body)
     if (!movie_id || !user_id || !rate_type || !rate_value || !rate_date) {
       res.status(400).json({ error: 'Invalid input data' });
