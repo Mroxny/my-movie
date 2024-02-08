@@ -19,7 +19,7 @@ class RateController {
       if (err) {
         res.status(500).json({ error: 'Server error' });
       } else {
-        res.json(result);
+        res.json(result[0]);
       }
     });
   }
@@ -49,32 +49,44 @@ class RateController {
     });
   }
 
-  static addRate(req, res) {
-    const {movie_id, user_id, r_p, r_ac, r_s, r_au, r_all} = req.body;
+  static getRatesCountByUser(req, res) {
+    const idUser = req.params.idUser;
 
+    Rate.getCountByUser(idUser, (err, result) => {
+      if (err) {
+        res.status(500).json({ error: 'Server error' });
+      } else {
+        res.json(result[0]);
+      }
+    });
+  }
+
+  // TODO: date format validation
+  static addRate(req, res) {
+    const {user_id, movie_id, rate_type, rate_value, rate_date} = req.body;
     console.log(req.body)
-    if (!movie_id || !user_id || !r_p || !r_ac || !r_s || !r_au || !r_all) {
+    if (!movie_id || !user_id || !rate_type || !rate_value || !rate_date) {
       res.status(400).json({ error: 'Invalid input data' });
       return;
     }
 
-    const rateData = {movie_id, user_id, r_p, r_ac, r_s, r_au, r_all};
+    const rateData = {user_id, movie_id, rate_type, rate_value, rate_date};
 
 
     Rate.addRate(rateData, (err, result) => {
       if (err) {
         res.status(500).json({ error: 'Server error' });
       } else {
-        res.json({ message: 'Rate added successfully', id: result.id });
+        res.status(201).json(result);
       }
     });
   }
 
   static updateRate(req, res) {
     const idRate = req.params.id;
-    const {movie_id, user_id, r_p, r_ac, r_s, r_au, r_all} = req.body;
+    const {user_id, movie_id, rate_type, rate_value, rate_date} = req.body;
 
-    if (!movie_id && !user_id && !r_p && !r_ac && !r_s && !r_au && !r_all) {
+    if (!movie_id && !user_id && !rate_type && !rate_value && !rate_date) {
       res.status(400).json({ error: 'Invalid input data' });
       return;
     }
@@ -87,33 +99,25 @@ class RateController {
           res.status(404).json({ error: 'Rate not found' });
         } else {
           const updatedData = {}
+          
+          if (user_id !== undefined) {
+            updatedData.user_id = user_id;
+          }
 
           if (movie_id !== undefined) {
             updatedData.movie_id = movie_id;
           }
 
-          if (user_id !== undefined) {
-            updatedData.user_id = user_id;
+          if (rate_type !== undefined) {
+            updatedData.rate_type = rate_type;
           }
 
-          if (r_p !== undefined) {
-            updatedData.r_p = r_p;
+          if (rate_value !== undefined) {
+            updatedData.rate_value = rate_value;
           }
 
-          if (r_ac !== undefined) {
-            updatedData.r_ac = r_ac;
-          }
-
-          if (r_s !== undefined) {
-            updatedData.r_s = r_s;
-          }
-
-          if (r_au !== undefined) {
-            updatedData.r_au = r_au;
-          }
-          
-          if (r_all !== undefined) {
-            updatedData.r_all = r_all;
+          if (rate_date !== undefined) {
+            updatedData.rate_date = rate_date;
           }
 
           Rate.updateRate(idRate, updatedData, (err, result) => {

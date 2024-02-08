@@ -1,12 +1,19 @@
 const app = require('../app'); 
 const request = require("supertest");
-const { reqAddUser, reqUpdateUser } = require("./userEndpoints.test.data");
+const { reqAddUser, reqUpdateUser } = require("./data/userEndpoints.test.data");
 
-
+let server;
+beforeAll(done => {
+    port = 3005
+    server = app.listen(port, () => {
+      console.log(`Test server started on port ${port}`);
+    });
+    done();
+  });
 
 describe("POST /users", () => {
     test("Should create a user", async () => {
-        return request(app)
+        return request(server)
             .post("/users")
             .send(reqAddUser)
             .expect(201)
@@ -16,11 +23,9 @@ describe("POST /users", () => {
              })
 
     });
-});
 
-describe("POST /users", () => {
     test("Should return an error of existing user", async () => {
-        return request(app)
+        return request(server)
             .post("/users")
             .send(reqAddUser)
             .expect(409)
@@ -32,10 +37,11 @@ describe("POST /users", () => {
     });
 });
 
+
 token = 0
 describe("GET /login", () => {
     test("Should login created user", async () => {
-        return request(app)
+        return request(server)
             .get("/login")
             .send(reqAddUser)
             .expect(200)
@@ -51,8 +57,8 @@ describe("GET /login", () => {
 
 createdUserId = 0
 describe("GET /users", () => {
-    it("Should return all users", async () => {
-        return request(app)
+    test("Should return all users", async () => {
+        return request(server)
             .get("/users")
             .set('Authorization',  token)
             .expect('Content-Type', /json/)
@@ -65,8 +71,8 @@ describe("GET /users", () => {
 });
 
 describe("GET /users/:id", () => {
-    it(`Should return created user`, async () => {
-        return request(app)
+    test(`Should return created user`, async () => {
+        return request(server)
             .get(`/users/${createdUserId}`)
             .set('Authorization',  token)
             .expect('Content-Type', /json/)
@@ -80,7 +86,7 @@ describe("GET /users/:id", () => {
 });
 describe("PUT /users/:id", () => {
     test(`Should update created user`, async () => {
-        return request(app)
+        return request(server)
             .put(`/users/${createdUserId}`)
             .set('Authorization',  token)
             .send(reqUpdateUser)
@@ -94,8 +100,8 @@ describe("PUT /users/:id", () => {
 });
 
 describe("GET /users/username/:username", () => {
-    it(`Should return updated user`, async () => {
-        return request(app)
+    test(`Should return updated user`, async () => {
+        return request(server)
             .get(`/users/username/${reqUpdateUser.username}`)
             .set('Authorization',  token)
             .expect('Content-Type', /json/)
@@ -111,7 +117,7 @@ describe("GET /users/username/:username", () => {
 
 describe("DELETE /users/:id", () => {
     test(`Should delete created`, async () => {
-        return request(app)
+        return request(server)
             .delete(`/users/${createdUserId}`)
             .set('Authorization',  token)
             .expect(200)
@@ -123,3 +129,6 @@ describe("DELETE /users/:id", () => {
     });
 });
 
+afterAll(done => {
+    server.close(done); // Zamknij serwer Express
+  });
