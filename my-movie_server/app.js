@@ -52,8 +52,6 @@ app.use(function(err, req, res, next) {
   res.send('error');
 });
 
-app.listen(port, () => {
-  console.log(`Movie-app server started on http://localhost:${port}`);
-});
+
 
 module.exports = app;
