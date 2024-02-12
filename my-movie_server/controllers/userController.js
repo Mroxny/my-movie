@@ -32,7 +32,7 @@ class UserController {
         
             res.status(200).json({ token });
           } else {
-            res.status(401).json({ error: 'Nieprawidłowe dane logowania' });
+            res.status(401).json({ error: 'Invalid login details' });
           }
         }
 
