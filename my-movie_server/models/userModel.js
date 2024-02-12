@@ -50,8 +50,30 @@ class User {
     });
   }
 
+  static async addRoom(userName, callback) {
+    var insertString = 'INSERT INTO rooms (room_name) VALUES (?)';
+    var insertData = [`${userName}'s room`];
+
+    db.run(insertString, insertData, (err) => {
+        if (err) {
+            console.log("Insert query error: " + err);
+            callback(err, null);
+        } else {
+            db.get('SELECT last_insert_rowid() as id', (err, row) => {
+                if (err) {
+                    console.log("Select query error: " + err);
+                    callback(err, null);
+                } else {
+                    var id_room = row.id;
+                    callback(null, { id_room: id_room });
+                }
+            });
+        }
+    });
+}
+
   static async addUser(userData, callback) {
-    const {username, password} = userData
+    const {username, password, room_id} = userData
     const hashedPassword = await hashPassword(password)
     
     if(hashedPassword.error){
@@ -60,8 +82,8 @@ class User {
       return
     }
     
-    var insertString = 'INSERT INTO users (username, password) VALUES (?, ?)'
-    var insertData = [username, hashedPassword.password]
+    var insertString = 'INSERT INTO users (username, password, room_id) VALUES (?, ?, ?)'
+    var insertData = [username, hashedPassword.password, room_id]
 
     db.run(insertString, insertData, (err) => {
       if (err) {
