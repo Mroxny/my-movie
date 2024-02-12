@@ -1,3 +1,4 @@
+const { json } = require('express');
 const User = require('../models/userModel');
 
 
@@ -32,7 +33,7 @@ class UserController {
         
             res.status(200).json({ token });
           } else {
-            res.status(401).json({ error: 'Nieprawidłowe dane logowania' });
+            res.status(401).json({ error: 'Invalid login details' });
           }
         }
 
@@ -89,16 +90,28 @@ class UserController {
 
     User.getByUsername(username, (err, user) => {
       if (err) {
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: `Server error. Couldn't validate username` });
       } else {
         if (user[0] !== undefined) {
           res.status(409).json({ error: `User username '${username}' already exists` });
         } else {
-          User.addUser(userData, (err, result) => {
+          User.addRoom(username, (err, room) => {
             if (err) {
-              res.status(500).json({ error: 'Server error' });
+              res.status(500).json({ error: `Server error. Couldn't create new room` });
             } else {
-              res.status(201).json(result);
+              if (room === undefined) {
+                res.status(500).json({ error: `Server error. Error while creating new room` });
+              }
+              else{
+                userData.room_id = room.id_room
+                User.addUser(userData, (err, result) => {
+                  if (err) {
+                    res.status(500).json({ error: `Server error. Couldn't create new user` });
+                  } else {
+                    res.status(201).json(result);
+                  }
+                });
+              }
             }
           });
         }

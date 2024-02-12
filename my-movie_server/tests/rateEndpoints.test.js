@@ -146,5 +146,5 @@ describe("DELETE /rate/:id", () => {
 });
 
 afterAll(done => {
-    server.close(done); // Zamknij serwer Express
+    server.close(done);
   });
