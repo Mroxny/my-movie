@@ -90,7 +90,15 @@ class User {
         console.log("Insert query error: "+err)
         callback(err, null);
       } else {
-        callback(null, {message: 'User added successfully'});
+        db.get('SELECT last_insert_rowid() as id', (err, row) => {
+          if (err) {
+              console.log("Select query error: " + err);
+              callback(err, null);
+          } else {
+              var id_user = row.id;
+              callback(null, {message: 'User added successfully', id_user: id_user });
+          }
+        });
       }
     });
   }
