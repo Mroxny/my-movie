@@ -11,6 +11,7 @@ beforeAll(done => {
     done();
   });
 
+createdUserId = 0
 describe("POST /users", () => {
     test("Should create a user", async () => {
         return request(server)
@@ -20,6 +21,7 @@ describe("POST /users", () => {
             .then(res => {
                 console.log(res.body.message)
                 expect(res.body.message).toEqual('User added successfully');
+                createdUserId = res.body.id_user
              })
 
     });
@@ -55,7 +57,6 @@ describe("GET /login", () => {
     });
 });
 
-createdUserId = 0
 describe("GET /users", () => {
     test("Should return all users", async () => {
         return request(server)
@@ -65,7 +66,7 @@ describe("GET /users", () => {
             .expect(200)
             .then((res) => {
                 expect(res.statusCode).toBe(200);
-                createdUserId = res.body[res.body.length-1].id_user
+                expect(res.body[res.body.length-1].id_user).toBe(createdUserId);
             })
     });
 });
@@ -130,5 +131,5 @@ describe("DELETE /users/:id", () => {
 });
 
 afterAll(done => {
-    server.close(done); // Zamknij serwer Express
+    server.close(done);
   });
