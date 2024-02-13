@@ -1,6 +1,6 @@
 const app = require('../app'); 
 const request = require("supertest");
-const { reqAddRate, reqUpdateRate } = require("./data/rateEndpoints.test.data");
+const { reqAddRate, reqAddInvalidRate, reqUpdateRate } = require("./data/rateEndpoints.test.data");
 const { reqAdmin } = require("./data/adminUtils.test.data");
 
 let server;
@@ -40,6 +40,19 @@ describe("POST /rates", () => {
                 console.log(res.body.message)
                 expect(res.body.message).toEqual('Rate added successfully');
                 createdRateId = res.body.id_rate
+
+             })
+
+    });
+    test("Should return date error", async () => {
+        return request(server)
+            .post("/rates")
+            .set('Authorization',  token)
+            .send(reqAddInvalidRate)
+            .expect(400)
+            .then(res => {
+                console.log(res.body.error)
+                expect(res.body.error).toEqual('Invalid date format. Please provide the date in the format: YYYY-MM-DD HH:mm:ss');
 
              })
 
