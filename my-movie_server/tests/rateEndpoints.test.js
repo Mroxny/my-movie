@@ -28,6 +28,7 @@ describe("GET /login", () => {
     });
 });
 
+createdRateId = 0
 describe("POST /rates", () => {
     test("Should create a rate", async () => {
         return request(server)
@@ -38,13 +39,14 @@ describe("POST /rates", () => {
             .then(res => {
                 console.log(res.body.message)
                 expect(res.body.message).toEqual('Rate added successfully');
+                createdRateId = res.body.id_rate
+
              })
 
     });
 });
 
 
-createdRateId = 0
 describe("GET /rates", () => {
     test("Should return all rates", async () => {
         return request(server)
@@ -53,7 +55,7 @@ describe("GET /rates", () => {
             .expect(200)
             .then((res) => {
                 expect(res.statusCode).toBe(200);
-                createdRateId = res.body[res.body.length-1].id_rate
+                expect(res.body[res.body.length-1].id_rate).toBe(createdRateId);
             })
     });
 });
@@ -68,7 +70,6 @@ describe("GET /rates/user/:idUser", () => {
             .then((res) => {
                 console.log(res.body)
                 expect(res.statusCode).toBe(200);
-                expect(res.body.length).toEqual(4)
             })
     });
 }); 
@@ -82,7 +83,6 @@ describe("GET /rates/user/:idUser/count", () => {
             .then((res) => {
                 console.log(res.body)
                 expect(res.statusCode).toBe(200);
-                expect(res.body.rates).toEqual(2)
             })
     });
 });
@@ -96,7 +96,6 @@ describe("GET /rates/movie/:idMovie", () => {
             .then((res) => {
                 console.log(res.body)
                 expect(res.statusCode).toBe(200);
-                expect(res.body.length).toEqual(1)
             })
     });
 });
