@@ -61,13 +61,18 @@ class RateController {
     });
   }
 
-  // TODO: date format validation
   static addRate(req, res) {
     const {user_id, movie_id, rate_type, rate_value, rate_date} = req.body;
     console.log(req.body)
     if (!movie_id || !user_id || !rate_type || !rate_value || !rate_date) {
       res.status(400).json({ error: 'Invalid input data' });
       return;
+    }
+
+    const dateFormatRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+    if (!dateFormatRegex.test(rate_date)) {
+        res.status(400).json({ error: 'Invalid date format. Please provide the date in the format: YYYY-MM-DD HH:mm:ss' });
+        return;
     }
 
     const rateData = {user_id, movie_id, rate_type, rate_value, rate_date};

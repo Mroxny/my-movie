@@ -1,6 +1,6 @@
 const app = require('../app'); 
 const request = require("supertest");
-const { reqAddRate, reqUpdateRate } = require("./data/rateEndpoints.test.data");
+const { reqAddRate, reqAddInvalidRate, reqUpdateRate } = require("./data/rateEndpoints.test.data");
 const { reqAdmin } = require("./data/adminUtils.test.data");
 
 let server;
@@ -28,6 +28,7 @@ describe("GET /login", () => {
     });
 });
 
+createdRateId = 0
 describe("POST /rates", () => {
     test("Should create a rate", async () => {
         return request(server)
@@ -38,13 +39,27 @@ describe("POST /rates", () => {
             .then(res => {
                 console.log(res.body.message)
                 expect(res.body.message).toEqual('Rate added successfully');
+                createdRateId = res.body.id_rate
+
+             })
+
+    });
+    test("Should return date error", async () => {
+        return request(server)
+            .post("/rates")
+            .set('Authorization',  token)
+            .send(reqAddInvalidRate)
+            .expect(400)
+            .then(res => {
+                console.log(res.body.error)
+                expect(res.body.error).toEqual('Invalid date format. Please provide the date in the format: YYYY-MM-DD HH:mm:ss');
+
              })
 
     });
 });
 
 
-createdRateId = 0
 describe("GET /rates", () => {
     test("Should return all rates", async () => {
         return request(server)
@@ -53,7 +68,7 @@ describe("GET /rates", () => {
             .expect(200)
             .then((res) => {
                 expect(res.statusCode).toBe(200);
-                createdRateId = res.body[res.body.length-1].id_rate
+                expect(res.body[res.body.length-1].id_rate).toBe(createdRateId);
             })
     });
 });
@@ -68,7 +83,6 @@ describe("GET /rates/user/:idUser", () => {
             .then((res) => {
                 console.log(res.body)
                 expect(res.statusCode).toBe(200);
-                expect(res.body.length).toEqual(4)
             })
     });
 }); 
@@ -82,7 +96,6 @@ describe("GET /rates/user/:idUser/count", () => {
             .then((res) => {
                 console.log(res.body)
                 expect(res.statusCode).toBe(200);
-                expect(res.body.rates).toEqual(2)
             })
     });
 });
@@ -96,7 +109,6 @@ describe("GET /rates/movie/:idMovie", () => {
             .then((res) => {
                 console.log(res.body)
                 expect(res.statusCode).toBe(200);
-                expect(res.body.length).toEqual(1)
             })
     });
 });

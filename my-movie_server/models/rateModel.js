@@ -112,7 +112,15 @@ class Rate {
         console.log("Insert query error: "+err)
         callback(err, null);
       } else {
-        callback(null, { message: 'Rate added successfully' });
+        db.get('SELECT last_insert_rowid() as id_rate', (err, row) => {
+          if (err) {
+              console.log("Select query error: " + err);
+              callback(err, null);
+          } else {
+              var id_rate = row.id_rate;
+              callback(null, { message: 'Rate added successfully', id_rate: id_rate });
+          }
+        });
       }
     });
   }
