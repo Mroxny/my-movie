@@ -1,6 +1,6 @@
 const reqAddUser = {
     username:"test_user", 
-    password: "zaq1@WSX"
+    password: "zaq1@WSX",
 }
 
 const reqUpdateUser = {

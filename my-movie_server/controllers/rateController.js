@@ -62,9 +62,9 @@ class RateController {
   }
 
   static addRate(req, res) {
-    const {user_id, movie_id, rate_type, rate_value, rate_date} = req.body;
+    const {user_id, entity_type, entity_id, rate_value, rate_date} = req.body;
     console.log(req.body)
-    if (!movie_id || !user_id || !rate_type || !rate_value || !rate_date) {
+    if (!user_id || !entity_type || !entity_id || !rate_value || !rate_date) {
       res.status(400).json({ error: 'Invalid input data' });
       return;
     }
@@ -75,7 +75,7 @@ class RateController {
         return;
     }
 
-    const rateData = {user_id, movie_id, rate_type, rate_value, rate_date};
+    const rateData = {user_id, entity_type, entity_id, rate_value, rate_date};
 
 
     Rate.addRate(rateData, (err, result) => {
@@ -89,9 +89,9 @@ class RateController {
 
   static updateRate(req, res) {
     const idRate = req.params.id;
-    const {user_id, movie_id, rate_type, rate_value, rate_date} = req.body;
+    const {user_id, entity_type, entity_id, rate_value, rate_date} = req.body;
 
-    if (!movie_id && !user_id && !rate_type && !rate_value && !rate_date) {
+    if (!entity_type && !user_id && !entity_id && !rate_value && !rate_date) {
       res.status(400).json({ error: 'Invalid input data' });
       return;
     }
@@ -109,12 +109,12 @@ class RateController {
             updatedData.user_id = user_id;
           }
 
-          if (movie_id !== undefined) {
-            updatedData.movie_id = movie_id;
+          if (entity_type !== undefined) {
+            updatedData.entity_type = entity_type;
           }
 
-          if (rate_type !== undefined) {
-            updatedData.rate_type = rate_type;
+          if (entity_id !== undefined) {
+            updatedData.entity_id = entity_id;
           }
 
           if (rate_value !== undefined) {

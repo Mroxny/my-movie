@@ -53,7 +53,7 @@ class User {
     SELECT 
     u.*,
     r.room_name,
-    r.img 
+    r.room_img 
     FROM users u
     INNER JOIN rooms r ON r.id_room = u.room_id
     WHERE u.username = ?;`
