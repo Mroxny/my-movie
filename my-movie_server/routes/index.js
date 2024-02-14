@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const MovieController = require('../controllers/movieController');
 const UserController = require('../controllers/userController');
 const RateController = require('../controllers/rateController');
-const CreatorController = require('../controllers/creatorController');
 
 require('dotenv').config();
 
