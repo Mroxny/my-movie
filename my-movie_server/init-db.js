@@ -21,14 +21,14 @@ db.serialize(() => {
     username TEXT NOT NULL, 
     password TEXT NOT NULL, 
     email TEXT, 
-    img TEXT, 
+    user_img TEXT, 
     isAdmin INTEGER DEFAULT 0,
     FOREIGN KEY(room_id) REFERENCES rooms(id_room))`);
 
   db.run(`CREATE TABLE IF NOT EXISTS rooms 
   (id_room INTEGER PRIMARY KEY AUTOINCREMENT, 
     room_name TEXT, 
-    img TEXT)`);
+    room_img TEXT)`);
 
   db.run(`CREATE TABLE IF NOT EXISTS rates 
   (id_rate INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -80,12 +80,12 @@ isTableEmpty('rooms')
   .then((isEmpty) => {
     if (isEmpty) {
       const initialRoomData = [
-        { room_name: "admin's room", img: "" },
+        { room_name: "admin's room", room_img: "" },
       ];
-      const insertRoom = db.prepare('INSERT INTO rooms (room_name, img) VALUES (?, ?)');
+      const insertRoom = db.prepare('INSERT INTO rooms (room_name, room_img) VALUES (?, ?)');
 
       initialRoomData.forEach((room) => {
-        insertRoom.run(room.room_name, room.img);
+        insertRoom.run(room.room_name, room.room_img);
       });
 
       insertRoom.finalize();

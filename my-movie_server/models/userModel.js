@@ -27,7 +27,17 @@ class User {
   }
 
   static getById(id ,callback) {
-    db.all('SELECT * FROM users WHERE id_user = ?', id, (err, result) => {
+    const query = `
+    SELECT 
+    u.*,
+    r.room_name,
+    r.room_img 
+    FROM users u
+    INNER JOIN rooms r ON r.id_room = u.room_id
+    WHERE u.id_user = ?;`
+
+
+    db.all(query, id, (err, result) => {
       if (err) {
         console.log("Select query error: "+err)
         callback(err, null);
@@ -39,7 +49,16 @@ class User {
   }
 
   static getByUsername(username ,callback) {
-    db.all("SELECT * FROM users WHERE username = ?", username, (err, result) => {
+    const query = `
+    SELECT 
+    u.*,
+    r.room_name,
+    r.img 
+    FROM users u
+    INNER JOIN rooms r ON r.id_room = u.room_id
+    WHERE u.username = ?;`
+
+    db.all(query, username, (err, result) => {
       if (err) {
         console.log("Select query error: "+err)
         callback(err, null);
