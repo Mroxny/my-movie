@@ -2,7 +2,6 @@ const { json } = require("express");
 const User = require("../models/userModel");
 
 class UserController {
-    // TODO: replace isAdmin to room_id in jwt sign
     static getUserToken(req, res) {
         const { username, password } = req.body;
 
@@ -29,7 +28,7 @@ class UserController {
                     const passwordMatch = await bcrypt.compare(password, u.password);
                     if (passwordMatch) {
                         const token = jwt.sign(
-                            { id_user: u.id_user, username: u.username, isAdmin: u.isAdmin },
+                            { id_user: u.id_user, username: u.username, room_id: u.room_id },
                             JWT_SECRET,
                             { expiresIn: "1h" }
                         );
