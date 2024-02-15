@@ -3,6 +3,9 @@ const List = require("../models/listModel");
 
 class ListController {
     static getAllLists(req, res) {
+        const client = req.user;
+        console.log(JSON.stringify(client));
+
         List.getAll((err, result) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });

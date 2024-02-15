@@ -1,14 +1,17 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 
+const router = express.Router();
+
 const MovieController = require("../controllers/movieController");
 const UserController = require("../controllers/userController");
 const RateController = require("../controllers/rateController");
 const ListController = require("../controllers/listController");
 
-require("dotenv").config();
+const User = require("../models/userModel");
 
-const router = express.Router();
+require("dotenv").config();
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const verifyToken = (req, res, next) => {
     const token = req.header("Authorization");
@@ -17,14 +20,32 @@ const verifyToken = (req, res, next) => {
         return res.status(401).json({ error: "Authorization failed, access denied" });
     }
 
-    const JWT_SECRET = process.env.JWT_SECRET;
-
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         req.user = decoded;
         next();
     } catch (error) {
         res.status(401).json({ error: "Token verification error, authorization failed" });
+    }
+};
+
+const isAdmin = (req, res, next) => {
+    const id_user = req.user.id_user;
+
+    try {
+        User.getById(id_user, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: "Server error. Failed to authorize administrator" });
+            } else {
+                if (!result[0] || !result[0].isAdmin) {
+                    return res.status(403).json({ error: "Unauthorized, user is not an admin" });
+                }
+                next();
+            }
+        });
+    } catch (error) {
+        console.error("Error checking admin status:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 };
 
@@ -49,7 +70,7 @@ router.get("/users/:id", verifyToken, UserController.getUserById);
 router.get("/users/username/:username", verifyToken, UserController.getUserByUsername);
 router.post("/users", UserController.addUser);
 router.put("/users/:id", verifyToken, UserController.updateUser);
-router.delete("/users/:id", verifyToken, UserController.deleteUser);
+router.delete("/users/:id", verifyToken, isAdmin, UserController.deleteUser);
 
 // rates
 router.get("/rates", RateController.getAllRates);
@@ -59,10 +80,10 @@ router.get("/rates/user/:idUser/count", RateController.getRatesCountByUser);
 router.get("/rates/movie/:idMovie", RateController.getRatesByMovie);
 router.post("/rates", verifyToken, RateController.addRate);
 router.put("/rates/:id", verifyToken, RateController.updateRate);
-router.delete("/rates/:id", verifyToken, RateController.deleteRate);
+router.delete("/rates/:id", verifyToken, isAdmin, RateController.deleteRate);
 
 // lists
-router.get("/lists", verifyToken, ListController.getAllLists);
+router.get("/lists", verifyToken, isAdmin, ListController.getAllLists);
 router.get("/lists/:id", verifyToken, ListController.getListById);
 router.get("/lists/room/:roomId", verifyToken, ListController.getListByRoom);
 router.get("/lists/:id/entities", verifyToken, ListController.getEntitiesByListId);
