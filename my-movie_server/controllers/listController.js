@@ -33,7 +33,7 @@ class ListController {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result[0]);
+                res.json(result);
             }
         });
     }
