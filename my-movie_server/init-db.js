@@ -132,7 +132,7 @@ isTableEmpty("rates")
 isTableEmpty("lists")
     .then((isEmpty) => {
         if (isEmpty) {
-            const initialListData = [{ room_id: 1, name: "Favourites" }];
+            const initialListData = [{ room_id: 1, name: "Favorites" }];
             const insertListType = db.prepare("INSERT INTO lists (room_id, name) VALUES (?, ?)");
 
             initialListData.forEach((list) => {
