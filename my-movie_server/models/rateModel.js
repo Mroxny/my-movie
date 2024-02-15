@@ -1,135 +1,140 @@
-const db = require('../config/database');
+const db = require("../config/database");
 
 class Rate {
-  static getAll(callback) {
-    const query = `SELECT * FROM rates`;
+    static getAll(callback) {
+        const query = `SELECT * FROM rates`;
 
-    db.all(query, (err, result) => {
-      if (err) {
-        console.log("Select query error: "+err)
-        callback(err, null);
-      } else {
-        console.log("Select query result: "+result)
-        callback(null, result);
-      }
-    });
-  }
+        db.all(query, (err, result) => {
+            if (err) {
+                console.log("Select query error: " + err);
+                callback(err, null);
+            } else {
+                console.log("Select query result: " + result);
+                callback(null, result);
+            }
+        });
+    }
 
-  static getById(id ,callback) {
-    const query = `SELECT *
+    static getById(id, callback) {
+        const query = `SELECT *
       FROM rates 
       WHERE id_rate = ?`;
 
-    db.all(query, id, (err, result) => {
-      if (err) {
-        console.log("Select query error: "+err)
-        callback(err, null);
-      } else {
-        console.log("Select query result: "+result)
-        callback(null, result);
-      }
-    });
-  }
+        db.all(query, id, (err, result) => {
+            if (err) {
+                console.log("Select query error: " + err);
+                callback(err, null);
+            } else {
+                console.log("Select query result: " + result);
+                callback(null, result);
+            }
+        });
+    }
 
-
-  static getByMovie(id_movie ,callback) {
-    const query = `
+    static getByMovie(id_movie, callback) {
+        const query = `
     SELECT
       r.*,
       u.username
     FROM rates r
     JOIN users u ON r.user_id = u.id_user
-    WHERE r.entity_type = 0 AND r.entity_id = ?`
+    WHERE r.entity_type = 0 AND r.entity_id = ?`;
 
-    db.all(query, id_movie, (err, result) => {
-      if (err) {
-        console.log("Select query error: "+err)
-        callback(err, null);
-      } else {
-        console.log("Select query result: "+result)
-        callback(null, result);
-      }
-    });
-  }
+        db.all(query, id_movie, (err, result) => {
+            if (err) {
+                console.log("Select query error: " + err);
+                callback(err, null);
+            } else {
+                console.log("Select query result: " + result);
+                callback(null, result);
+            }
+        });
+    }
 
-  static getByUser(id_user, callback) {
-    const query = `SELECT *
+    static getByUser(id_user, callback) {
+        const query = `SELECT *
       FROM rates 
       WHERE user_id = ?`;
 
-    db.all(query, id_user, (err, result) => {
-      if (err) {
-        console.log("Select query error: "+err)
-        callback(err, null);
-      } else {
-        console.log("Select query result: "+result)
-        callback(null, result);
-      }
-    });
-  }
-  static getCountByUser(id_user, callback) {
-    const query = `SELECT 
+        db.all(query, id_user, (err, result) => {
+            if (err) {
+                console.log("Select query error: " + err);
+                callback(err, null);
+            } else {
+                console.log("Select query result: " + result);
+                callback(null, result);
+            }
+        });
+    }
+    static getCountByUser(id_user, callback) {
+        const query = `SELECT 
       COUNT(DISTINCT entity_id) AS rates
       FROM rates
       WHERE user_id = ?;`;
 
-    db.all(query, id_user, (err, result) => {
-      if (err) {
-        console.log("Select query error: "+err)
-        callback(err, null);
-      } else {
-        console.log("Select query result: "+result)
-        callback(null, result);
-      }
-    });
-  }
-
-  static addRate(rateData, callback) {
-    const {user_id, entity_type, entity_id, rate_value, rate_date} = rateData    
-    const insertString='INSERT INTO rates (user_id, entity_type, entity_id, rate_value, rate_date) VALUES (?, ?, ?, ?, ?)'
-
-    db.run(insertString, [user_id, entity_type, entity_id, rate_value, rate_date], (err) => {
-      if (err) {
-        console.log("Insert query error: "+err)
-        callback(err, null);
-      } else {
-        db.get('SELECT last_insert_rowid() as id_rate', (err, row) => {
-          if (err) {
-              console.log("Select query error: " + err);
-              callback(err, null);
-          } else {
-              var id_rate = row.id_rate;
-              callback(null, { message: 'Rate added successfully', id_rate: id_rate });
-          }
+        db.all(query, id_user, (err, result) => {
+            if (err) {
+                console.log("Select query error: " + err);
+                callback(err, null);
+            } else {
+                console.log("Select query result: " + result);
+                callback(null, result);
+            }
         });
-      }
-    });
-  }
+    }
 
-  static updateRate(id, updatedData, callback) {
-    const updateQuery = 'UPDATE rates SET ' + Object.keys(updatedData).map(key => `${key} = ?`).join(', ') + ' WHERE id_rate = ?';
-    const values = [...Object.values(updatedData), id];
+    static addRate(rateData, callback) {
+        const { user_id, entity_type, entity_id, rate_value, rate_date } = rateData;
+        const insertString =
+            "INSERT INTO rates (user_id, entity_type, entity_id, rate_value, rate_date) VALUES (?, ?, ?, ?, ?)";
 
-    db.run(updateQuery, values, function (err) {
-      if (err) {
-        console.log("Update query error: "+err)
-        callback(err, null);
-      } else {
-        callback(null, { message: 'Rate updated successfully' });
-      }
-    });
-  }
+        db.run(insertString, [user_id, entity_type, entity_id, rate_value, rate_date], (err) => {
+            if (err) {
+                console.log("Insert query error: " + err);
+                callback(err, null);
+            } else {
+                db.get("SELECT last_insert_rowid() as id_rate", (err, row) => {
+                    if (err) {
+                        console.log("Select query error: " + err);
+                        callback(err, null);
+                    } else {
+                        var id_rate = row.id_rate;
+                        callback(null, { message: "Rate added successfully", id_rate: id_rate });
+                    }
+                });
+            }
+        });
+    }
 
-  static deleteRate(id, callback) {
-    db.run('DELETE FROM rates WHERE id_rate = ?', [id], (err) => {
-      if (err) {
-        console.log("Delete query error: "+err)
-        callback(err, null);
-      } else {
-        callback(null, { message: 'Rate deleted successfully' });
-      }
-    });
-  }
+    static updateRate(id, updatedData, callback) {
+        const updateQuery =
+            "UPDATE rates SET " +
+            Object.keys(updatedData)
+                .map((key) => `${key} = ?`)
+                .join(", ") +
+            " WHERE id_rate = ?";
+        const values = [...Object.values(updatedData), id];
+
+        db.run(updateQuery, values, function (err) {
+            if (err) {
+                console.log("Update query error: " + err);
+                callback(err, null);
+            } else {
+                callback(null, { message: "Rate updated successfully" });
+            }
+        });
+    }
+
+    static deleteRate(id, callback) {
+        db.run("DELETE FROM rates WHERE id_rate = ?", [id], (err) => {
+            if (err) {
+                console.log("Delete query error: " + err);
+                callback(err, null);
+            } else {
+                callback(null, { message: "Rate deleted successfully" });
+            }
+        });
+    }
 }
 
 module.exports = Rate;
