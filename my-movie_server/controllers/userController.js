@@ -2,6 +2,7 @@ const { json } = require("express");
 const User = require("../models/userModel");
 
 class UserController {
+    // TODO: replace isAdmin to room_id in jwt sign
     static getUserToken(req, res) {
         const { username, password } = req.body;
 
