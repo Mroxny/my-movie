@@ -93,6 +93,18 @@ describe("PUT /users/:id", () => {
                 expect(res.body.message).toEqual("User updated successfully");
             });
     });
+
+    test(`Should return an error of unauthorized access`, async () => {
+        return request(server)
+            .put(`/users/1`)
+            .set("Authorization", token)
+            .send(reqUpdateUser)
+            .expect(403)
+            .then((res) => {
+                console.log(res.body.message);
+                expect(res.body.error).toEqual("Unauthorized, user is not an owner nor admin");
+            });
+    });
 });
 
 describe("GET /users/username/:username", () => {

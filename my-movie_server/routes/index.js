@@ -57,10 +57,19 @@ const validateUser = (req, res, next) => {
             if (err) {
                 res.status(500).json({ error: "Server error. Failed to authorize request" });
             } else {
-                if (!result[0] || !result[0].isAdmin || !user.id_user !== req.params.id) {
-                    return res.status(403).json({ error: "Unauthorized, user is not an admin" });
+                if (result[0]) {
+                    if (result[0].isAdmin) {
+                        console.log("Recognized user: " + user.id_user);
+
+                        return next();
+                    } else if (user.id_user == req.params.id) {
+                        console.log("Recognized user: " + user.id_user);
+
+                        return next();
+                    }
                 }
-                next();
+
+                return res.status(403).json({ error: "Unauthorized, user is not an owner nor admin" });
             }
         });
     } catch (error) {
