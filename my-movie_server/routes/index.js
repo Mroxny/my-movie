@@ -29,7 +29,7 @@ const verifyToken = (req, res, next) => {
     }
 };
 
-const isAdmin = (req, res, next) => {
+const validateAdmin = (req, res, next) => {
     const id_user = req.user.id_user;
 
     try {
@@ -38,6 +38,26 @@ const isAdmin = (req, res, next) => {
                 res.status(500).json({ error: "Server error. Failed to authorize administrator" });
             } else {
                 if (!result[0] || !result[0].isAdmin) {
+                    return res.status(403).json({ error: "Unauthorized, user is not an admin" });
+                }
+                next();
+            }
+        });
+    } catch (error) {
+        console.error("Error checking admin status:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+const validateUser = (req, res, next) => {
+    const user = req.user;
+
+    try {
+        User.getById(user.id_user, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: "Server error. Failed to authorize request" });
+            } else {
+                if (!result[0] || !result[0].isAdmin || !user.id_user !== req.params.id) {
                     return res.status(403).json({ error: "Unauthorized, user is not an admin" });
                 }
                 next();
@@ -69,8 +89,8 @@ router.get("/users", verifyToken, UserController.getAllUsers);
 router.get("/users/:id", verifyToken, UserController.getUserById);
 router.get("/users/username/:username", verifyToken, UserController.getUserByUsername);
 router.post("/users", UserController.addUser);
-router.put("/users/:id", verifyToken, UserController.updateUser);
-router.delete("/users/:id", verifyToken, isAdmin, UserController.deleteUser);
+router.put("/users/:id", verifyToken, validateUser, UserController.updateUser);
+router.delete("/users/:id", verifyToken, validateUser, UserController.deleteUser);
 
 // rates
 router.get("/rates", RateController.getAllRates);
@@ -80,10 +100,10 @@ router.get("/rates/user/:idUser/count", RateController.getRatesCountByUser);
 router.get("/rates/movie/:idMovie", RateController.getRatesByMovie);
 router.post("/rates", verifyToken, RateController.addRate);
 router.put("/rates/:id", verifyToken, RateController.updateRate);
-router.delete("/rates/:id", verifyToken, isAdmin, RateController.deleteRate);
+router.delete("/rates/:id", verifyToken, validateAdmin, RateController.deleteRate);
 
 // lists
-router.get("/lists", verifyToken, isAdmin, ListController.getAllLists);
+router.get("/lists", verifyToken, validateAdmin, ListController.getAllLists);
 router.get("/lists/:id", verifyToken, ListController.getListById);
 router.get("/lists/room/:roomId", verifyToken, ListController.getListByRoom);
 router.get("/lists/:id/entities", verifyToken, ListController.getEntitiesByListId);
