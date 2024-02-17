@@ -107,9 +107,10 @@ isTableEmpty("rates")
     .then((isEmpty) => {
         if (isEmpty) {
             const initialRateData = [
-                { user_id: 1, entity_type: 0, entity_id: 1, rate_value: 5, rate_date: "2001-01-01 10:11:12" },
-                { user_id: 1, entity_type: 0, entity_id: 2, rate_value: 4, rate_date: "2001-01-01 10:12:12" },
-                { user_id: 1, entity_type: 0, entity_id: 3, rate_value: 5, rate_date: "2001-01-01 10:13:12" },
+                // entity type: 1 - movie, 2 - tv
+                { user_id: 1, entity_type: 1, entity_id: 1, rate_value: 5, rate_date: "2001-01-01 10:11:12" },
+                { user_id: 1, entity_type: 1, entity_id: 2, rate_value: 4, rate_date: "2001-01-01 10:12:12" },
+                { user_id: 1, entity_type: 1, entity_id: 3, rate_value: 5, rate_date: "2001-01-01 10:13:12" },
             ];
             const insertRate = db.prepare(
                 "INSERT INTO rates (user_id, entity_type, entity_id, rate_value, rate_date) VALUES (?, ?, ?, ?, ?)"
@@ -153,9 +154,9 @@ isTableEmpty("entityInList")
     .then((isEmpty) => {
         if (isEmpty) {
             const initialEntityInListData = [
-                { list_id: 1, entity_type: 0, entity_id: 1 },
-                { list_id: 1, entity_type: 0, entity_id: 2 },
-                { list_id: 1, entity_type: 0, entity_id: 3 },
+                { list_id: 1, entity_type: 1, entity_id: 1 },
+                { list_id: 1, entity_type: 1, entity_id: 2 },
+                { list_id: 1, entity_type: 1, entity_id: 3 },
             ];
             const insertEntityInList = db.prepare(
                 "INSERT INTO entityInList (list_id, entity_type, entity_id) VALUES (?, ?, ?)"
