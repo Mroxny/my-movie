@@ -1,6 +1,8 @@
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
+var csrf = require("lusca").csrf;
+var session = require("express-session");
 var cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 var logger = require("morgan");
@@ -32,7 +34,16 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use(session({ secret: process.env.JWT_SECRET, cookie: { maxAge: 60000 }, resave: true, saveUninitialized: true }));
+app.use(csrf());
 app.use(limiter);
+
+app.use((err, req, res, next) => {
+    if (err && err.code === "EBADCSRFTOKEN") {
+        return res.status(403).json({ error: "Invalid CSRF token" });
+    }
+    next();
+});
 
 app.use("/", indexRouter);
 
@@ -49,7 +60,7 @@ app.use(function (err, req, res, next) {
 
     // render the error page
     res.status(err.status || 500);
-    res.send("error");
+    res.send("Unexpected server side error");
 });
 
 module.exports = app;

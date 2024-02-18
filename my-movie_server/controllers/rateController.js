@@ -136,7 +136,7 @@ class RateController {
                         if (err) {
                             res.status(500).json({ error: "Server error" });
                         } else {
-                            res.json(result);
+                            res.status(200).json(result);
                         }
                     });
                 }
@@ -151,7 +151,7 @@ class RateController {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                res.status(200).json(result);
             }
         });
     }
