@@ -85,6 +85,9 @@ router.use((req, res, next) => {
     next();
 });
 
+// TODO: add pagination
+
+// TODO: add movie endpoints
 // movies
 // router.get('/movies', MovieController.getAllMovies);
 // router.get('/movies/:id', MovieController.getMovieById);
