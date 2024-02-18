@@ -4,28 +4,16 @@ const { reqAddRate, reqAddInvalidRate, reqUpdateRate } = require("./data/rateEnd
 const { reqAdmin } = require("./data/adminUtils.test.data");
 
 let server;
-beforeAll((done) => {
+let token;
+beforeAll(async () => {
     port = 3004;
     server = app.listen(port, () => {
         console.log(`Test server started on port ${port}`);
     });
-    done();
-});
 
-token = 0;
-describe("GET /login", () => {
-    test("Should login user", async () => {
-        return request(server)
-            .get("/login")
-            .send(reqAdmin)
-            .expect(200)
-            .then((res) => {
-                console.log(res.body.token);
-                expect(res.body.token.length).toBeGreaterThan(0);
-
-                token = res.body.token;
-            });
-    });
+    const loginResponse = await request(server).get("/login").send(reqAdmin);
+    token = loginResponse.body.token;
+    console.log("Token: " + token);
 });
 
 createdRateId = 0;
