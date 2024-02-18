@@ -34,7 +34,15 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use(session({ secret: process.env.JWT_SECRET, cookie: { maxAge: 60000 }, resave: true, saveUninitialized: true }));
+app.use(
+    session({
+        secret: process.env.JWT_SECRET,
+        cookie: { maxAge: 60000 },
+        resave: true,
+        saveUninitialized: true,
+        cookie: { secure: true, httpOnly: true },
+    })
+);
 app.use(csrf());
 app.use(limiter);
 
