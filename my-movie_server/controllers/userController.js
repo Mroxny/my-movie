@@ -43,11 +43,33 @@ class UserController {
     }
 
     static getAllUsers(req, res) {
-        User.getAll((err, result) => {
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+        const maxLimit = 50
+
+        if (limit > maxLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${maxLimit}` });
+            return;
+        }
+    
+        const offset = (page - 1) * limit;
+    
+        User.getUserCount((err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                const totalPages = Math.ceil(totalCount / limit);
+                User.getAll(limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.json({
+                            users: result,
+                            total_results: totalCount,
+                            total_pages: totalPages
+                        });
+                    }
+                });
             }
         });
     }
