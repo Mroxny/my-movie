@@ -1,12 +1,45 @@
 const Rate = require("../models/rateModel");
 
 class RateController {
-    static getAllRates(req, res) {
+    static getAllRatesOld(req, res) {
         Rate.getAll((err, result) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
                 res.json(result);
+            }
+        });
+    }
+
+    static getAllRates(req, res) {
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+        const maxLimit = 50;
+
+        if (limit > maxLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${maxLimit}` });
+            return;
+        }
+
+        const offset = (page - 1) * limit;
+        const condition = "1= ?";
+        const value = 1;
+        Rate.getRateCount(condition, value, (err, totalCount) => {
+            if (err) {
+                res.status(500).json({ error: "Server error" });
+            } else {
+                const totalPages = Math.ceil(totalCount / limit);
+                Rate.getAll(limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.json({
+                            rates: result,
+                            total_results: totalCount,
+                            total_pages: totalPages,
+                        });
+                    }
+                });
             }
         });
     }

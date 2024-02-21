@@ -1,15 +1,26 @@
+const { query } = require("express");
 const db = require("../config/database");
 
 class Rate {
-    static getAll(callback) {
-        const query = `SELECT * FROM rates`;
+    static getRateCount(condition, value, callback) {
+        const query = `SELECT COUNT(*) as total FROM rates WHERE ${condition}`;
 
-        db.all(query, (err, result) => {
+        db.get(query, value, (err, row) => {
+            if (err) {
+                console.log("Count query error: " + err);
+                callback(err, null);
+            } else {
+                callback(null, row.total);
+            }
+        });
+    }
+
+    static getAll(limit, offset, callback) {
+        db.all(`SELECT * FROM rates LIMIT ? OFFSET ?`, [limit, offset], (err, result) => {
             if (err) {
                 console.log("Select query error: " + err);
                 callback(err, null);
             } else {
-                console.log("Select query result: " + result);
                 callback(null, result);
             }
         });
