@@ -27,7 +27,7 @@ class ListController {
                         res.status(500).json({ error: "Server error" });
                     } else {
                         res.status(200).json({
-                            rates: result,
+                            lists: result,
                             total_results: totalCount,
                             total_pages: totalPages,
                         });
@@ -50,15 +50,42 @@ class ListController {
     }
 
     static getListByRoom(req, res) {
-        const roomId = req.params.roomId;
+        const roomId = parseInt(req.params.roomId);
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+
+        if (limit > ListController.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${ListController.maxQueryLimit}` });
+            return;
+        }
+
+        if (roomId < 1) {
+            res.status(400).json({ error: `Invalid room id: '${roomId}'.` });
+            return;
+        }
+
+        const offset = (page - 1) * limit;
+        const table = "lists";
+        const condition = "room_id = ?";
+        const value = roomId;
 
         console.log("room in query: " + roomId);
-
-        List.getByRoom(roomId, (err, result) => {
+        List.getCount(table, condition, value, (err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                const totalPages = Math.ceil(totalCount / limit);
+                List.getByRoom(roomId, limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.status(200).json({
+                            lists: result,
+                            total_results: totalCount,
+                            total_pages: totalPages,
+                        });
+                    }
+                });
             }
         });
     }

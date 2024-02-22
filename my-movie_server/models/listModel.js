@@ -29,9 +29,9 @@ class List {
 
     static getById(id, callback) {
         const query = `
-        SELECT l.*
-        FROM lists l
-        WHERE l.id_list = ?;`;
+            SELECT l.*
+            FROM lists l
+            WHERE l.id_list = ?;`;
 
         db.all(query, id, (err, result) => {
             if (err) {
@@ -44,13 +44,14 @@ class List {
         });
     }
 
-    static getByRoom(id, callback) {
+    static getByRoom(id, limit, offset, callback) {
         const query = `
-        SELECT l.*
-        FROM lists l
-        WHERE l.room_id = ?;`;
+            SELECT l.*
+            FROM lists l
+            WHERE l.room_id = ?
+            LIMIT ? OFFSET ?`;
 
-        db.all(query, id, (err, result) => {
+        db.all(query, [id, limit, offset], (err, result) => {
             if (err) {
                 console.log("Select query error: " + err);
                 callback(err, null);
