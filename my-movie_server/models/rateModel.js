@@ -42,16 +42,17 @@ class Rate {
         });
     }
 
-    static getByMovie(id_movie, callback) {
+    static getByMovie(id_movie, limit, offset, callback) {
         const query = `
-    SELECT
-      r.*,
-      u.username
-    FROM rates r
-    JOIN users u ON r.user_id = u.id_user
-    WHERE r.entity_type = 0 AND r.entity_id = ?`;
+            SELECT
+                r.*,
+                u.username
+            FROM rates r
+            JOIN users u ON r.user_id = u.id_user
+            WHERE r.entity_type = 1 AND r.entity_id = ?
+            LIMIT ? OFFSET ?`;
 
-        db.all(query, id_movie, (err, result) => {
+        db.all(query, [id_movie, limit, offset], (err, result) => {
             if (err) {
                 console.log("Select query error: " + err);
                 callback(err, null);

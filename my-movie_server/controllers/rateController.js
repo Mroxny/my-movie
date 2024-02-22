@@ -1,5 +1,5 @@
 const Rate = require("../models/rateModel");
-
+// TODO: maxLimit in pagination based on env
 class RateController {
     static getAllRatesOld(req, res) {
         Rate.getAll((err, result) => {
@@ -33,7 +33,7 @@ class RateController {
                     if (err) {
                         res.status(500).json({ error: "Server error" });
                     } else {
-                        res.json({
+                        res.status(200).json({
                             rates: result,
                             total_results: totalCount,
                             total_pages: totalPages,
@@ -57,13 +57,40 @@ class RateController {
     }
 
     static getRatesByMovie(req, res) {
-        const idMovie = req.params.idMovie;
+        const idMovie = parseInt(req.params.idMovie);
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+        const maxLimit = 50;
 
-        Rate.getByMovie(idMovie, (err, result) => {
+        if (limit > maxLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${maxLimit}` });
+            return;
+        }
+
+        if (idMovie < 1) {
+            res.status(400).json({ error: `Invalid movie id: '${idMovie}'.` });
+            return;
+        }
+
+        const offset = (page - 1) * limit;
+        const condition = "entity_id = ?";
+        const value = idMovie;
+        Rate.getRateCount(condition, value, (err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                const totalPages = Math.ceil(totalCount / limit);
+                Rate.getByMovie(idMovie, limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.status(200).json({
+                            rates: result,
+                            total_results: totalCount,
+                            total_pages: totalPages,
+                        });
+                    }
+                });
             }
         });
     }
