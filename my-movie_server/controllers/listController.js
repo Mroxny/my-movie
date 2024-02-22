@@ -1,16 +1,38 @@
-const { json } = require("express");
 const List = require("../models/listModel");
+require("dotenv").config();
 
 class ListController {
-    static getAllLists(req, res) {
-        const client = req.user;
-        console.log(JSON.stringify(client));
+    static maxQueryLimit = process.env.MAX_QUERY_RESULTS || 50;
 
-        List.getAll((err, result) => {
+    static getAllLists(req, res) {
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+
+        if (limit > ListController.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${ListController.maxQueryLimit}` });
+            return;
+        }
+
+        const offset = (page - 1) * limit;
+        const table = "lists";
+        const condition = "1= ?";
+        const value = 1;
+        List.getCount(table, condition, value, (err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                const totalPages = Math.ceil(totalCount / limit);
+                List.getAll(limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.status(200).json({
+                            rates: result,
+                            total_results: totalCount,
+                            total_pages: totalPages,
+                        });
+                    }
+                });
             }
         });
     }
