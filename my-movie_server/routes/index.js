@@ -86,6 +86,7 @@ router.use((req, res, next) => {
 });
 
 // FIXME: optimize pagination queries (LIMIT and OFFSET)
+// FIXME: add inheritance in controllers
 
 // TODO: add movie endpoints
 // movies
