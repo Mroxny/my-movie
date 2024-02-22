@@ -96,13 +96,41 @@ class RateController {
     }
 
     static getRatesByUser(req, res) {
-        const idUser = req.params.idUser;
+        const idUser = parseInt(req.params.idUser);
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+        const maxLimit = 50;
 
-        Rate.getByUser(idUser, (err, result) => {
+        if (limit > maxLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${maxLimit}` });
+            return;
+        }
+
+        if (idUser < 1) {
+            res.status(400).json({ error: `Invalid user id: '${idMovie}'.` });
+            return;
+        }
+
+        const offset = (page - 1) * limit;
+        const condition = "user_id = ?";
+        const value = idUser;
+
+        Rate.getRateCount(condition, value, (err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                const totalPages = Math.ceil(totalCount / limit);
+                Rate.getByUser(idUser, limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.status(200).json({
+                            rates: result,
+                            total_results: totalCount,
+                            total_pages: totalPages,
+                        });
+                    }
+                });
             }
         });
     }

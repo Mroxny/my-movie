@@ -63,12 +63,13 @@ class Rate {
         });
     }
 
-    static getByUser(id_user, callback) {
+    static getByUser(id_user, limit, offset, callback) {
         const query = `SELECT *
-      FROM rates 
-      WHERE user_id = ?`;
+            FROM rates 
+            WHERE user_id = ?
+            LIMIT ? OFFSET ?`;
 
-        db.all(query, id_user, (err, result) => {
+        db.all(query, [id_user, limit, offset], (err, result) => {
             if (err) {
                 console.log("Select query error: " + err);
                 callback(err, null);
@@ -80,9 +81,9 @@ class Rate {
     }
     static getCountByUser(id_user, callback) {
         const query = `SELECT 
-      COUNT(DISTINCT entity_id) AS rates
-      FROM rates
-      WHERE user_id = ?;`;
+            COUNT(DISTINCT entity_id) AS rates
+            FROM rates
+            WHERE user_id = ?;`;
 
         db.all(query, id_user, (err, result) => {
             if (err) {
