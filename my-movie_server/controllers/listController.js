@@ -91,13 +91,41 @@ class ListController {
     }
 
     static getEntitiesByListId(req, res) {
-        const idList = req.params.id;
+        const idList = parseInt(req.params.id);
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
 
-        List.getEntities(idList, (err, result) => {
+        if (limit > ListController.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${ListController.maxQueryLimit}` });
+            return;
+        }
+
+        if (idList < 1) {
+            res.status(400).json({ error: `Invalid list id: '${idList}'.` });
+            return;
+        }
+
+        const offset = (page - 1) * limit;
+        const table = "entityInList";
+        const condition = "list_id = ?";
+        const value = idList;
+
+        List.getCount(table, condition, value, (err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                const totalPages = Math.ceil(totalCount / limit);
+                List.getEntities(idList, limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.status(200).json({
+                            entities: result,
+                            total_results: totalCount,
+                            total_pages: totalPages,
+                        });
+                    }
+                });
             }
         });
     }
