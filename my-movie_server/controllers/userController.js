@@ -1,7 +1,12 @@
 const { json } = require("express");
+require("dotenv").config();
+
 const User = require("../models/userModel");
 
 class UserController {
+    static JWT_SECRET = process.env.JWT_SECRET;
+    static maxQueryLimit = process.env.MAX_QUERY_RESULTS || 50;
+
     static getUserToken(req, res) {
         const { username, password } = req.body;
 
@@ -15,8 +20,6 @@ class UserController {
         const bcrypt = require("bcrypt");
         require("dotenv").config();
 
-        const JWT_SECRET = process.env.JWT_SECRET;
-
         User.getByUsername(username, async (err, user) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
@@ -29,7 +32,7 @@ class UserController {
                     if (passwordMatch) {
                         const token = jwt.sign(
                             { id_user: u.id_user, username: u.username, room_id: u.room_id },
-                            JWT_SECRET,
+                            UserController.JWT_SECRET,
                             { expiresIn: "1h" }
                         );
 
@@ -45,15 +48,14 @@ class UserController {
     static getAllUsers(req, res) {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 10;
-        const maxLimit = 50
 
-        if (limit > maxLimit) {
-            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${maxLimit}` });
+        if (limit > UserController.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${UserController.maxQueryLimit}` });
             return;
         }
-    
+
         const offset = (page - 1) * limit;
-    
+
         User.getUserCount((err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
@@ -66,7 +68,7 @@ class UserController {
                         res.json({
                             users: result,
                             total_results: totalCount,
-                            total_pages: totalPages
+                            total_pages: totalPages,
                         });
                     }
                 });

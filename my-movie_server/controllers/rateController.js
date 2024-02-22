@@ -1,6 +1,9 @@
 const Rate = require("../models/rateModel");
-// TODO: maxLimit in pagination based on env
+require("dotenv").config();
+
 class RateController {
+    static maxQueryLimit = process.env.MAX_QUERY_RESULTS || 50;
+
     static getAllRatesOld(req, res) {
         Rate.getAll((err, result) => {
             if (err) {
@@ -14,10 +17,9 @@ class RateController {
     static getAllRates(req, res) {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 10;
-        const maxLimit = 50;
 
-        if (limit > maxLimit) {
-            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${maxLimit}` });
+        if (limit > RateController.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${RateController.maxQueryLimit}` });
             return;
         }
 
@@ -60,10 +62,9 @@ class RateController {
         const idMovie = parseInt(req.params.idMovie);
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 10;
-        const maxLimit = 50;
 
-        if (limit > maxLimit) {
-            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${maxLimit}` });
+        if (limit > RateController.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${RateController.maxQueryLimit}` });
             return;
         }
 
@@ -99,10 +100,9 @@ class RateController {
         const idUser = parseInt(req.params.idUser);
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 10;
-        const maxLimit = 50;
 
-        if (limit > maxLimit) {
-            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${maxLimit}` });
+        if (limit > RateController.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${RateController.maxQueryLimit}` });
             return;
         }
 
