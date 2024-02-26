@@ -6,7 +6,7 @@ let server;
 beforeAll((done) => {
     port = 3005;
     server = app.listen(port, () => {
-        console.log(`Test server started on port ${port}`);
+        console.log(`Test server started on port ${port} (users)`);
     });
     done();
 });
@@ -19,7 +19,7 @@ describe("POST /users", () => {
             .send(reqAddUser)
             .expect(201)
             .then((res) => {
-                console.log(res.body.message);
+                console.log("POST /users callback(1): "+res.body.message);
                 expect(res.body.message).toEqual("User added successfully");
                 createdUserId = res.body.id_user;
             });
@@ -31,7 +31,7 @@ describe("POST /users", () => {
             .send(reqAddUser)
             .expect(409)
             .then((res) => {
-                console.log(res.body.error);
+                console.log("POST /users callback(2): "+res.body.error);
                 expect(res.body.error).toEqual(`User username '${reqAddUser.username}' already exists`);
             });
     });
@@ -45,7 +45,7 @@ describe("GET /login", () => {
             .send(reqAddUser)
             .expect(200)
             .then((res) => {
-                console.log(res.body.token);
+                console.log("Access token: "+res.body.token);
                 expect(res.body.token.length).toBeGreaterThan(0);
 
                 token = res.body.token;
@@ -61,7 +61,7 @@ describe("GET /users", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                expect(res.statusCode).toBe(200);
+                console.log("GET All users: "+JSON.stringify(res.body));
                 expect(res.body.users[res.body.users.length - 1].id_user).toBe(createdUserId);
                 expect(res.body.total_results).toBeGreaterThan(1);
             });
@@ -76,8 +76,7 @@ describe("GET /users/:id", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                console.log(res.body);
-                expect(res.statusCode).toBe(200);
+                console.log("GET User by id: "+JSON.stringify(res.body));
                 expect(res.body.username).toEqual(reqAddUser.username);
             });
     });
@@ -90,7 +89,7 @@ describe("PUT /users/:id", () => {
             .send(reqUpdateUser)
             .expect(200)
             .then((res) => {
-                console.log(res.body.message);
+                console.log("PUT update user msg(1): "+res.body.message);
                 expect(res.body.message).toEqual("User updated successfully");
             });
     });
@@ -102,7 +101,7 @@ describe("PUT /users/:id", () => {
             .send(reqUpdateUser)
             .expect(403)
             .then((res) => {
-                console.log(res.body.message);
+                console.log("PUT update user msg(2): "+res.body.error);
                 expect(res.body.error).toEqual("Unauthorized, user is not an owner nor admin");
             });
     });
@@ -116,8 +115,7 @@ describe("GET /users/username/:username", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                console.log(res.body);
-                expect(res.statusCode).toBe(200);
+                console.log("GET User by username: "+JSON.stringify(res.body));
                 expect(res.body.username).toEqual(reqUpdateUser.username);
                 expect(res.body.id_user).toEqual(createdUserId);
             });
@@ -131,7 +129,7 @@ describe("DELETE /users/:id", () => {
             .set("Authorization", token)
             .expect(200)
             .then((res) => {
-                console.log(res.body.message);
+                console.log("DELETE user msg: "+res.body.message);
                 expect(res.body.message).toEqual("User deleted successfully");
             });
     });

@@ -8,7 +8,7 @@ let token;
 beforeAll(async () => {
     port = 3004;
     server = app.listen(port, () => {
-        console.log(`Test server started on port ${port}`);
+        console.log(`Test server started on port ${port} (rates)`);
     });
 
     const loginResponse = await request(server).get("/login").send(reqAdmin);
@@ -25,7 +25,7 @@ describe("POST /rates", () => {
             .send(reqAddRate)
             .expect(201)
             .then((res) => {
-                console.log(res.body.message);
+                console.log("POST add rate msg (1): "+res.body.message);
                 expect(res.body.message).toEqual("Rate added successfully");
                 createdRateId = res.body.id_rate;
             });
@@ -37,7 +37,7 @@ describe("POST /rates", () => {
             .send(reqAddInvalidRate)
             .expect(400)
             .then((res) => {
-                console.log(res.body.error);
+                console.log("POST add rate msg (2): "+res.body.error);
                 expect(res.body.error).toEqual(
                     "Invalid date format. Please provide the date in the format: YYYY-MM-DD HH:mm:ss"
                 );
@@ -52,7 +52,7 @@ describe("GET /rates", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                expect(res.statusCode).toBe(200);
+                console.log("GET all rates: "+JSON.stringify(res.body));
                 expect(res.body.rates[res.body.rates.length - 1].id_rate).toBe(createdRateId);
                 expect(res.body.total_results).toBeGreaterThan(0);
             });
@@ -66,7 +66,7 @@ describe("GET /rates/user/:idUser", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                console.log("Rates by user: "+JSON.stringify(res.body));
+                console.log("GET Rates by user: "+JSON.stringify(res.body));
                 expect(res.statusCode).toBe(200);
                 expect(res.body.total_results).toBeGreaterThan(0);
             });
@@ -80,7 +80,7 @@ describe("GET /rates/user/:idUser/count", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                console.log("Num of user rates: "+JSON.stringify(res.body));
+                console.log("GET Num of user rates: "+JSON.stringify(res.body));
                 expect(res.statusCode).toBe(200);
                 expect(res.body.rates).toBeGreaterThan(0);
             });
@@ -94,7 +94,7 @@ describe("GET /rates/movie/:idMovie", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                console.log("Rates by movie: "+JSON.stringify(res.body));
+                console.log("GET Rates by movie: "+JSON.stringify(res.body));
                 expect(res.body.total_results).toBeGreaterThan(0);
             });
     });
@@ -108,7 +108,7 @@ describe("PUT /rates/:id", () => {
             .send(reqUpdateRate)
             .expect(200)
             .then((res) => {
-                console.log(res.body.message);
+                console.log("PUT rate msg: "+res.body.message);
                 expect(res.body.message).toEqual("Rate updated successfully");
             });
     });
@@ -121,8 +121,7 @@ describe("GET /rates/:id", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                console.log(res.body);
-                expect(res.statusCode).toBe(200);
+                console.log("GET Rates by id: "+JSON.stringify(res.body));
                 expect(res.body.rate_value).toEqual(reqUpdateRate.rate_value);
             });
     });
@@ -135,7 +134,7 @@ describe("DELETE /rate/:id", () => {
             .set("Authorization", token)
             .expect(200)
             .then((res) => {
-                console.log(res.body.message);
+                console.log("DELETE rate msg: "+res.body.message);
                 expect(res.body.message).toEqual("Rate deleted successfully");
             });
     });
