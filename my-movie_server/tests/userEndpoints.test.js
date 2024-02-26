@@ -62,7 +62,8 @@ describe("GET /users", () => {
             .expect(200)
             .then((res) => {
                 expect(res.statusCode).toBe(200);
-                expect(res.body[res.body.length - 1].id_user).toBe(createdUserId);
+                expect(res.body.users[res.body.users.length - 1].id_user).toBe(createdUserId);
+                expect(res.body.total_results).toBeGreaterThan(1);
             });
     });
 });
