@@ -56,8 +56,9 @@ describe("GET /lists", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                expect(res.statusCode).toBe(200);
-                expect(res.body[res.body.length - 1].id_list).toBe(createdListId);
+                console.log(res.body);
+                expect(res.body.lists[res.body.lists.length - 1].id_list).toBe(createdListId);
+                expect(res.body.total_results).toBeGreaterThan(0);
             });
     });
 });
@@ -71,7 +72,8 @@ describe("GET /lists/:id/entities", () => {
             .expect(200)
             .then((res) => {
                 console.log(res.body);
-                expect(res.body[res.body.length - 1].id_entity_in_list).toBe(createdEntityId);
+                expect(res.body.entities[res.body.entities.length - 1].id_entity_in_list).toBe(createdEntityId);
+                expect(res.body.total_results).toBeGreaterThan(0);
             });
     });
 });
@@ -85,7 +87,7 @@ describe("GET lists/room/:roomId", () => {
             .expect(200)
             .then((res) => {
                 console.log(res.body);
-                expect(res.body.length).toBeGreaterThan(0);
+                expect(res.body.total_results).toBeGreaterThan(0);
             });
     });
 });
