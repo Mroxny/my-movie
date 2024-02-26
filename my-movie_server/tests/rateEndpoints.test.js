@@ -53,7 +53,8 @@ describe("GET /rates", () => {
             .expect(200)
             .then((res) => {
                 expect(res.statusCode).toBe(200);
-                expect(res.body[res.body.length - 1].id_rate).toBe(createdRateId);
+                expect(res.body.rates[res.body.rates.length - 1].id_rate).toBe(createdRateId);
+                expect(res.body.total_results).toBeGreaterThan(0);
             });
     });
 });
@@ -65,8 +66,9 @@ describe("GET /rates/user/:idUser", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                console.log(res.body);
+                console.log("Rates by user: "+JSON.stringify(res.body));
                 expect(res.statusCode).toBe(200);
+                expect(res.body.total_results).toBeGreaterThan(0);
             });
     });
 });
@@ -78,8 +80,9 @@ describe("GET /rates/user/:idUser/count", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                console.log(res.body);
+                console.log("Num of user rates: "+JSON.stringify(res.body));
                 expect(res.statusCode).toBe(200);
+                expect(res.body.rates).toBeGreaterThan(0);
             });
     });
 });
@@ -87,12 +90,12 @@ describe("GET /rates/user/:idUser/count", () => {
 describe("GET /rates/movie/:idMovie", () => {
     test(`Should return rates based on movie`, async () => {
         return request(server)
-            .get(`/rates/movie/${reqAddRate.movie_id}`)
+            .get(`/rates/movie/${reqAddRate.entity_id}`)
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                console.log(res.body);
-                expect(res.statusCode).toBe(200);
+                console.log("Rates by movie: "+JSON.stringify(res.body));
+                expect(res.body.total_results).toBeGreaterThan(0);
             });
     });
 });
