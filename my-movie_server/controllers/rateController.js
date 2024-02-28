@@ -1,32 +1,23 @@
+const Controller = require("./controller");
 const Rate = require("../models/rateModel");
-require("dotenv").config();
 
-class RateController {
-    static maxQueryLimit = process.env.MAX_QUERY_RESULTS || 50;
-
-    static getAllRatesOld(req, res) {
-        Rate.getAll((err, result) => {
-            if (err) {
-                res.status(500).json({ error: "Server error" });
-            } else {
-                res.json(result);
-            }
-        });
-    }
+class RateController extends Controller {
 
     static getAllRates(req, res) {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 10;
 
-        if (limit > RateController.maxQueryLimit) {
-            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${RateController.maxQueryLimit}` });
+        if (limit > super.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${super.maxQueryLimit}` });
             return;
         }
 
         const offset = (page - 1) * limit;
-        const condition = "1= ?";
+        const table = "rates";
+        const condition = "1 = ?";
         const value = 1;
-        Rate.getRateCount(condition, value, (err, totalCount) => {
+
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
@@ -63,8 +54,8 @@ class RateController {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 10;
 
-        if (limit > RateController.maxQueryLimit) {
-            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${RateController.maxQueryLimit}` });
+        if (limit > super.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${super.maxQueryLimit}` });
             return;
         }
 
@@ -74,9 +65,11 @@ class RateController {
         }
 
         const offset = (page - 1) * limit;
+        const table = "rates";
         const condition = "entity_id = ?";
         const value = idMovie;
-        Rate.getRateCount(condition, value, (err, totalCount) => {
+
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
@@ -112,10 +105,11 @@ class RateController {
         }
 
         const offset = (page - 1) * limit;
+        const table = "rates";
         const condition = "user_id = ?";
         const value = idUser;
 
-        Rate.getRateCount(condition, value, (err, totalCount) => {
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
