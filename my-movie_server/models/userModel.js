@@ -13,17 +13,6 @@ const hashPassword = async (password) => {
 };
 
 class User {
-    static getUserCount(callback) {
-        db.get(`SELECT COUNT(*) as total FROM users`, (err, row) => {
-            if (err) {
-                console.log("Count query error: " + err);
-                callback(err, null);
-            } else {
-                callback(null, row.total);
-            }
-        });
-    }
-
     static getAll(limit, offset, callback) {
         db.all(`SELECT * FROM users LIMIT ? OFFSET ?`, [limit, offset], (err, result) => {
             if (err) {

@@ -1,11 +1,12 @@
 const { json } = require("express");
-require("dotenv").config();
 
+const Controller = require("./controller");
 const User = require("../models/userModel");
 
-class UserController {
-    static JWT_SECRET = process.env.JWT_SECRET;
-    static maxQueryLimit = process.env.MAX_QUERY_RESULTS || 50;
+
+class UserController extends Controller{
+    // static JWT_SECRET = process.env.JWT_SECRET;
+    // static maxQueryLimit = process.env.MAX_QUERY_RESULTS || 50;
 
     static getUserToken(req, res) {
         const { username, password } = req.body;
@@ -32,7 +33,7 @@ class UserController {
                     if (passwordMatch) {
                         const token = jwt.sign(
                             { id_user: u.id_user, username: u.username, room_id: u.room_id },
-                            UserController.JWT_SECRET,
+                            super.JWT_SECRET,
                             { expiresIn: "1h" }
                         );
 
@@ -49,14 +50,17 @@ class UserController {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 10;
 
-        if (limit > UserController.maxQueryLimit) {
-            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${UserController.maxQueryLimit}` });
+        if (limit > super.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${super.maxQueryLimit}` });
             return;
         }
 
         const offset = (page - 1) * limit;
+        const table = "users";
+        const condition = "1 = ?";
+        const value = 1;
 
-        User.getUserCount((err, totalCount) => {
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
