@@ -1,15 +1,14 @@
+const Controller = require("./controller");
 const List = require("../models/listModel");
-require("dotenv").config();
 
-class ListController {
-    static maxQueryLimit = process.env.MAX_QUERY_RESULTS || 50;
+class ListController extends Controller {
 
     static getAllLists(req, res) {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 10;
 
-        if (limit > ListController.maxQueryLimit) {
-            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${ListController.maxQueryLimit}` });
+        if (limit > super.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${super.maxQueryLimit}` });
             return;
         }
 
@@ -17,7 +16,7 @@ class ListController {
         const table = "lists";
         const condition = "1= ?";
         const value = 1;
-        List.getCount(table, condition, value, (err, totalCount) => {
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
@@ -54,8 +53,8 @@ class ListController {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 10;
 
-        if (limit > ListController.maxQueryLimit) {
-            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${ListController.maxQueryLimit}` });
+        if (limit > super.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${super.maxQueryLimit}` });
             return;
         }
 
@@ -70,7 +69,7 @@ class ListController {
         const value = roomId;
 
         console.log("room in query: " + roomId);
-        List.getCount(table, condition, value, (err, totalCount) => {
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
@@ -95,8 +94,8 @@ class ListController {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 10;
 
-        if (limit > ListController.maxQueryLimit) {
-            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${ListController.maxQueryLimit}` });
+        if (limit > super.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${super.maxQueryLimit}` });
             return;
         }
 
@@ -110,7 +109,7 @@ class ListController {
         const condition = "list_id = ?";
         const value = idList;
 
-        List.getCount(table, condition, value, (err, totalCount) => {
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {

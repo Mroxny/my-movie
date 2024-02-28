@@ -1,20 +1,6 @@
 const db = require("../config/database");
-const bcrypt = require("bcrypt");
 
 class List {
-    static getCount(table, condition, value, callback) {
-        const query = `SELECT COUNT(*) as total FROM ${table} WHERE ${condition}`;
-
-        db.get(query, value, (err, row) => {
-            if (err) {
-                console.log("Count query error: " + err);
-                callback(err, null);
-            } else {
-                callback(null, row.total);
-            }
-        });
-    }
-
     static getAll(limit, offset, callback) {
         db.all("SELECT * FROM lists LIMIT ? OFFSET ?", [limit, offset], (err, result) => {
             if (err) {
