@@ -1,3 +1,6 @@
+// TODO: redesign controller by adding 3rd party TMDB service (using Axios and Redis)
+
+
 const Movie = require('../models/movieModel');
 
 

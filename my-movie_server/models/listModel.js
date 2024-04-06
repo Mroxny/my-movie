@@ -1,9 +1,8 @@
 const db = require("../config/database");
-const bcrypt = require("bcrypt");
 
 class List {
-    static getAll(callback) {
-        db.all("SELECT * FROM lists", (err, result) => {
+    static getAll(limit, offset, callback) {
+        db.all("SELECT * FROM lists LIMIT ? OFFSET ?", [limit, offset], (err, result) => {
             if (err) {
                 console.log("Select query error: " + err);
                 callback(err, null);
@@ -16,9 +15,9 @@ class List {
 
     static getById(id, callback) {
         const query = `
-        SELECT l.*
-        FROM lists l
-        WHERE l.id_list = ?;`;
+            SELECT l.*
+            FROM lists l
+            WHERE l.id_list = ?;`;
 
         db.all(query, id, (err, result) => {
             if (err) {
@@ -31,13 +30,14 @@ class List {
         });
     }
 
-    static getByRoom(id, callback) {
+    static getByRoom(id, limit, offset, callback) {
         const query = `
-        SELECT l.*
-        FROM lists l
-        WHERE l.room_id = ?;`;
+            SELECT l.*
+            FROM lists l
+            WHERE l.room_id = ?
+            LIMIT ? OFFSET ?`;
 
-        db.all(query, id, (err, result) => {
+        db.all(query, [id, limit, offset], (err, result) => {
             if (err) {
                 console.log("Select query error: " + err);
                 callback(err, null);
@@ -48,14 +48,14 @@ class List {
         });
     }
 
-    static getEntities(id, callback) {
+    static getEntities(id, limit, offset, callback) {
         const query = `
-        SELECT e.*
-        FROM entityInList e
-        WHERE list_id = ?;
-        `;
+            SELECT e.*
+            FROM entityInList e
+            WHERE list_id = ?
+            LIMIT ? OFFSET ?`;
 
-        db.all(query, id, (err, result) => {
+        db.all(query, [id, limit, offset], (err, result) => {
             if (err) {
                 console.log("Select query error: " + err);
                 callback(err, null);

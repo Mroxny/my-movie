@@ -1,12 +1,38 @@
+const Controller = require("./controller");
 const Rate = require("../models/rateModel");
 
-class RateController {
+class RateController extends Controller {
+
     static getAllRates(req, res) {
-        Rate.getAll((err, result) => {
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+
+        if (limit > super.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${super.maxQueryLimit}` });
+            return;
+        }
+
+        const offset = (page - 1) * limit;
+        const table = "rates";
+        const condition = "1 = ?";
+        const value = 1;
+
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                const totalPages = Math.ceil(totalCount / limit);
+                Rate.getAll(limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.status(200).json({
+                            rates: result,
+                            total_results: totalCount,
+                            total_pages: totalPages,
+                        });
+                    }
+                });
             }
         });
     }
@@ -24,25 +50,81 @@ class RateController {
     }
 
     static getRatesByMovie(req, res) {
-        const idMovie = req.params.idMovie;
+        const idMovie = parseInt(req.params.idMovie);
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
 
-        Rate.getByMovie(idMovie, (err, result) => {
+        if (limit > super.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${super.maxQueryLimit}` });
+            return;
+        }
+
+        if (idMovie < 1) {
+            res.status(400).json({ error: `Invalid movie id: '${idMovie}'.` });
+            return;
+        }
+
+        const offset = (page - 1) * limit;
+        const table = "rates";
+        const condition = "entity_id = ?";
+        const value = idMovie;
+
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                const totalPages = Math.ceil(totalCount / limit);
+                Rate.getByMovie(idMovie, limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.status(200).json({
+                            rates: result,
+                            total_results: totalCount,
+                            total_pages: totalPages,
+                        });
+                    }
+                });
             }
         });
     }
 
     static getRatesByUser(req, res) {
-        const idUser = req.params.idUser;
+        const idUser = parseInt(req.params.idUser);
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
 
-        Rate.getByUser(idUser, (err, result) => {
+        if (limit > RateController.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${RateController.maxQueryLimit}` });
+            return;
+        }
+
+        if (idUser < 1) {
+            res.status(400).json({ error: `Invalid user id: '${idMovie}'.` });
+            return;
+        }
+
+        const offset = (page - 1) * limit;
+        const table = "rates";
+        const condition = "user_id = ?";
+        const value = idUser;
+
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                const totalPages = Math.ceil(totalCount / limit);
+                Rate.getByUser(idUser, limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.status(200).json({
+                            rates: result,
+                            total_results: totalCount,
+                            total_pages: totalPages,
+                        });
+                    }
+                });
             }
         });
     }

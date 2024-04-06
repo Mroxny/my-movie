@@ -13,17 +13,17 @@ const hashPassword = async (password) => {
 };
 
 class User {
-    static getAll(callback) {
-        db.all("SELECT * FROM users", (err, result) => {
+    static getAll(limit, offset, callback) {
+        db.all(`SELECT * FROM users LIMIT ? OFFSET ?`, [limit, offset], (err, result) => {
             if (err) {
                 console.log("Select query error: " + err);
                 callback(err, null);
             } else {
-                console.log("Select query result: " + result);
                 callback(null, result);
             }
         });
     }
+
 
     static getById(id, callback) {
         const query = `

@@ -8,7 +8,7 @@ let token;
 beforeAll(async () => {
     port = 3006;
     server = app.listen(port, () => {
-        console.log(`Test server started on port ${port}`);
+        console.log(`Test server started on port ${port} (lists)`);
     });
 
     const loginResponse = await request(server).get("/login").send(reqAdmin);
@@ -25,7 +25,7 @@ describe("POST /lists", () => {
             .send(reqAddList)
             .expect(201)
             .then((res) => {
-                console.log(res.body.message);
+                console.log("POST new list msg: "+res.body.message);
                 expect(res.body.message).toEqual("List added successfully");
                 createdListId = res.body.id;
             });
@@ -41,7 +41,7 @@ describe("POST /lists/:id/entity", () => {
             .send(reqAddEntity)
             .expect(201)
             .then((res) => {
-                console.log(res.body.message);
+                console.log("POST new entity msg: "+res.body.message);
                 expect(res.body.message).toEqual("Entity added successfully");
                 createdEntityId = res.body.id;
             });
@@ -56,8 +56,9 @@ describe("GET /lists", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                expect(res.statusCode).toBe(200);
-                expect(res.body[res.body.length - 1].id_list).toBe(createdListId);
+                console.log("GET all lists: "+JSON.stringify(res.body));
+                expect(res.body.lists[res.body.lists.length - 1].id_list).toBe(createdListId);
+                expect(res.body.total_results).toBeGreaterThan(0);
             });
     });
 });
@@ -70,8 +71,9 @@ describe("GET /lists/:id/entities", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                console.log(res.body);
-                expect(res.body[res.body.length - 1].id_entity_in_list).toBe(createdEntityId);
+                console.log("GET all entites of the list: "+JSON.stringify(res.body));
+                expect(res.body.entities[res.body.entities.length - 1].id_entity_in_list).toBe(createdEntityId);
+                expect(res.body.total_results).toBeGreaterThan(0);
             });
     });
 });
@@ -84,8 +86,8 @@ describe("GET lists/room/:roomId", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                console.log(res.body);
-                expect(res.body.length).toBeGreaterThan(0);
+                console.log("GET all lists of the room: "+JSON.stringify(res.body));
+                expect(res.body.total_results).toBeGreaterThan(0);
             });
     });
 });
@@ -98,7 +100,7 @@ describe("PUT /lists/:id", () => {
             .send(reqUpdateList)
             .expect(200)
             .then((res) => {
-                console.log(res.body.message);
+                console.log("PUT list msg: "+res.body.message);
                 expect(res.body.message).toEqual("List updated successfully");
             });
     });
@@ -112,7 +114,7 @@ describe("GET /lists/:id", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                console.log(res.body);
+                console.log("GET list by id: "+JSON.stringify(res.body));
                 expect(res.body.name).toEqual(reqUpdateList.name);
             });
     });
@@ -125,7 +127,7 @@ describe("DELETE /lists/entity/:id_entity", () => {
             .set("Authorization", token)
             .expect(200)
             .then((res) => {
-                console.log(res.body.message);
+                console.log("DELETE entity msg: "+res.body.message);
                 expect(res.body.message).toEqual("Entity deleted successfully");
             });
     });
@@ -138,7 +140,7 @@ describe("DELETE /lists/:id", () => {
             .set("Authorization", token)
             .expect(200)
             .then((res) => {
-                console.log(res.body.message);
+                console.log("DELETE list msg: "+res.body.message);
                 expect(res.body.message).toEqual("List deleted successfully");
             });
     });

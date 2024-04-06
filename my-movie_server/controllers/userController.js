@@ -1,7 +1,13 @@
 const { json } = require("express");
+
+const Controller = require("./controller");
 const User = require("../models/userModel");
 
-class UserController {
+
+class UserController extends Controller{
+    // static JWT_SECRET = process.env.JWT_SECRET;
+    // static maxQueryLimit = process.env.MAX_QUERY_RESULTS || 50;
+
     static getUserToken(req, res) {
         const { username, password } = req.body;
 
@@ -15,8 +21,6 @@ class UserController {
         const bcrypt = require("bcrypt");
         require("dotenv").config();
 
-        const JWT_SECRET = process.env.JWT_SECRET;
-
         User.getByUsername(username, async (err, user) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
@@ -29,7 +33,7 @@ class UserController {
                     if (passwordMatch) {
                         const token = jwt.sign(
                             { id_user: u.id_user, username: u.username, room_id: u.room_id },
-                            JWT_SECRET,
+                            super.JWT_SECRET,
                             { expiresIn: "1h" }
                         );
 
@@ -43,11 +47,35 @@ class UserController {
     }
 
     static getAllUsers(req, res) {
-        User.getAll((err, result) => {
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+
+        if (limit > super.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${super.maxQueryLimit}` });
+            return;
+        }
+
+        const offset = (page - 1) * limit;
+        const table = "users";
+        const condition = "1 = ?";
+        const value = 1;
+
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                const totalPages = Math.ceil(totalCount / limit);
+                User.getAll(limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.json({
+                            users: result,
+                            total_results: totalCount,
+                            total_pages: totalPages,
+                        });
+                    }
+                });
             }
         });
     }

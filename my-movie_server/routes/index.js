@@ -85,7 +85,9 @@ router.use((req, res, next) => {
     next();
 });
 
-// TODO: add pagination
+// FIXME: optimize pagination queries (LIMIT and OFFSET)
+// TODO: redesign error msgs and codes
+// test2
 
 // TODO: add movie endpoints
 // movies

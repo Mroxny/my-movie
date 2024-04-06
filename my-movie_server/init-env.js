@@ -8,6 +8,7 @@ const generateJWTSecret = () => {
 const valueDictionary = {
     JWT_SECRET: generateJWTSecret(),
     PORT: 3003,
+    MAX_QUERY_RESULTS: 50,
 };
 
 const envFilePath = ".env";

@@ -1,15 +1,13 @@
+const { query } = require("express");
 const db = require("../config/database");
 
 class Rate {
-    static getAll(callback) {
-        const query = `SELECT * FROM rates`;
-
-        db.all(query, (err, result) => {
+    static getAll(limit, offset, callback) {
+        db.all(`SELECT * FROM rates LIMIT ? OFFSET ?`, [limit, offset], (err, result) => {
             if (err) {
                 console.log("Select query error: " + err);
                 callback(err, null);
             } else {
-                console.log("Select query result: " + result);
                 callback(null, result);
             }
         });
@@ -31,16 +29,17 @@ class Rate {
         });
     }
 
-    static getByMovie(id_movie, callback) {
+    static getByMovie(id_movie, limit, offset, callback) {
         const query = `
-    SELECT
-      r.*,
-      u.username
-    FROM rates r
-    JOIN users u ON r.user_id = u.id_user
-    WHERE r.entity_type = 0 AND r.entity_id = ?`;
+            SELECT
+                r.*,
+                u.username
+            FROM rates r
+            JOIN users u ON r.user_id = u.id_user
+            WHERE r.entity_type = 1 AND r.entity_id = ?
+            LIMIT ? OFFSET ?`;
 
-        db.all(query, id_movie, (err, result) => {
+        db.all(query, [id_movie, limit, offset], (err, result) => {
             if (err) {
                 console.log("Select query error: " + err);
                 callback(err, null);
@@ -51,12 +50,13 @@ class Rate {
         });
     }
 
-    static getByUser(id_user, callback) {
+    static getByUser(id_user, limit, offset, callback) {
         const query = `SELECT *
-      FROM rates 
-      WHERE user_id = ?`;
+            FROM rates 
+            WHERE user_id = ?
+            LIMIT ? OFFSET ?`;
 
-        db.all(query, id_user, (err, result) => {
+        db.all(query, [id_user, limit, offset], (err, result) => {
             if (err) {
                 console.log("Select query error: " + err);
                 callback(err, null);
@@ -68,9 +68,9 @@ class Rate {
     }
     static getCountByUser(id_user, callback) {
         const query = `SELECT 
-      COUNT(DISTINCT entity_id) AS rates
-      FROM rates
-      WHERE user_id = ?;`;
+            COUNT(DISTINCT entity_id) AS rates
+            FROM rates
+            WHERE user_id = ?;`;
 
         db.all(query, id_user, (err, result) => {
             if (err) {

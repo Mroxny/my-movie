@@ -1,16 +1,37 @@
-const { json } = require("express");
+const Controller = require("./controller");
 const List = require("../models/listModel");
 
-class ListController {
-    static getAllLists(req, res) {
-        const client = req.user;
-        console.log(JSON.stringify(client));
+class ListController extends Controller {
 
-        List.getAll((err, result) => {
+    static getAllLists(req, res) {
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+
+        if (limit > super.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${super.maxQueryLimit}` });
+            return;
+        }
+
+        const offset = (page - 1) * limit;
+        const table = "lists";
+        const condition = "1= ?";
+        const value = 1;
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                const totalPages = Math.ceil(totalCount / limit);
+                List.getAll(limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.status(200).json({
+                            lists: result,
+                            total_results: totalCount,
+                            total_pages: totalPages,
+                        });
+                    }
+                });
             }
         });
     }
@@ -28,27 +49,82 @@ class ListController {
     }
 
     static getListByRoom(req, res) {
-        const roomId = req.params.roomId;
+        const roomId = parseInt(req.params.roomId);
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+
+        if (limit > super.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${super.maxQueryLimit}` });
+            return;
+        }
+
+        if (roomId < 1) {
+            res.status(400).json({ error: `Invalid room id: '${roomId}'.` });
+            return;
+        }
+
+        const offset = (page - 1) * limit;
+        const table = "lists";
+        const condition = "room_id = ?";
+        const value = roomId;
 
         console.log("room in query: " + roomId);
-
-        List.getByRoom(roomId, (err, result) => {
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                const totalPages = Math.ceil(totalCount / limit);
+                List.getByRoom(roomId, limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.status(200).json({
+                            lists: result,
+                            total_results: totalCount,
+                            total_pages: totalPages,
+                        });
+                    }
+                });
             }
         });
     }
 
     static getEntitiesByListId(req, res) {
-        const idList = req.params.id;
+        const idList = parseInt(req.params.id);
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
 
-        List.getEntities(idList, (err, result) => {
+        if (limit > super.maxQueryLimit) {
+            res.status(400).json({ error: `Invalid page limit: ${limit}. Max is ${super.maxQueryLimit}` });
+            return;
+        }
+
+        if (idList < 1) {
+            res.status(400).json({ error: `Invalid list id: '${idList}'.` });
+            return;
+        }
+
+        const offset = (page - 1) * limit;
+        const table = "entityInList";
+        const condition = "list_id = ?";
+        const value = idList;
+
+        super.getCountInTable(table, condition, value,(err, totalCount) => {
             if (err) {
                 res.status(500).json({ error: "Server error" });
             } else {
-                res.json(result);
+                const totalPages = Math.ceil(totalCount / limit);
+                List.getEntities(idList, limit, offset, (err, result) => {
+                    if (err) {
+                        res.status(500).json({ error: "Server error" });
+                    } else {
+                        res.status(200).json({
+                            entities: result,
+                            total_results: totalCount,
+                            total_pages: totalPages,
+                        });
+                    }
+                });
             }
         });
     }
